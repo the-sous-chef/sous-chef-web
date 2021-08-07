@@ -1,0 +1,9 @@
+export const ACCOUNT = '/account';
+export const ERROR = '/error';
+export const MAIN = '/';
+export const LOGIN = '/login';
+export const LOGOUT = '/logout';
+export const NOT_FOUND = '/404';
+export const PROFILE = '/profile';
+export const RECIPES = '/recipes';
+export const RECIPE = '/recipe/:id';

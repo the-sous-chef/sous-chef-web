@@ -1,0 +1,38 @@
+version: "3.6"
+services:
+  ssr:
+    build:
+        context: .
+        args:
+          DEBUG: ${DEBUG}
+          NODE_ENV: development
+    command: npm run start:dev:server
+    container_name: sous-chef-ssr-dev
+    env_file: .env
+    ports:
+      - "3000:80"
+      # Node debug ports
+      - "9229:9229"
+    volumes:
+        - "./@types:/opt/app/@types"
+        - "./src:/opt/app/src"
+        - "./webpack.config.js:/opt/app/webpack.config.js"
+
+  webpack-dev-server:
+    build:
+        context: .
+        args:
+          DEBUG: ${DEBUG}
+          NODE_ENV: development
+    command: npm run start:dev:client
+    container_name: sous-chef-webpack-dev-server
+    env_file: .env
+    ports:
+      # Node debug ports
+      - "9222:9222"
+      # Webpack dev middleware ws port
+      - "8080:8080"
+    volumes:
+        - "./@types:/opt/app/@types"
+        - "./src:/opt/app/src"
+        - "./webpack.config.js:/opt/app/webpack.config.js"
