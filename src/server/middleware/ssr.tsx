@@ -36,7 +36,8 @@ export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<unknow
     const client = new ApolloClient({
         ssrMode: true,
         link: createHttpLink({
-            // TODO fix this
+            // TODO fix this - this url needs to be coonfigured to point to the federated gateway lambda
+            // Need to setup local aws services to mock appconfig
             uri: 'http://localhost:3010',
             credentials: 'same-origin',
             headers: ctx.req.headers,
