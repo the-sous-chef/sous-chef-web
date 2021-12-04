@@ -11,7 +11,7 @@ export const getConfig = async (): Promise<App.Config> => {
         const response = await client.getConfiguration({
             Application: process.env.AWS_APPLICATION,
             ClientId: process.env.AWS_CLIENT_ID,
-            Configuration: process.env.AWS_CONFIGURATION,
+            Configuration: process.env.DEPLOYMENT,
             ClientConfigurationVersion: configVersion,
             Environment: process.env.NODE_ENV,
         });
