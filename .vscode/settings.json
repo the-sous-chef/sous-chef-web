@@ -1,6 +1,8 @@
 {
-    "files.eol": "\n",
-    "eslint.autoFixOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": false
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
     "eslint.alwaysShowStatus": true,
     "eslint.validate": [
         "javascript",
@@ -8,7 +10,9 @@
         "typescript",
         "typescriptreact"
     ],
-    "editor.codeActionsOnSave": {
-        "source.fixAll.eslint": true
+    "files.eol": "\n",
+    "prettier.eslintIntegration": true,
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
 }

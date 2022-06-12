@@ -16,7 +16,7 @@ ARG DEBUG=
 ARG NODE_ENV=production
 ###############################################################################
 
-FROM node:15-alpine as base
+FROM node:18-alpine as base
 
 ARG APP_DIR
 ARG DEBUG
@@ -32,31 +32,31 @@ EXPOSE 80
 
 WORKDIR ${APP_DIR}
 
-FROM base as build
+FROM node:18-alpine as build
 
-COPY ./ecosystem.config.js  ${APP_DIR}/ecosystem.config.js
-COPY ./package-lock.json    ${APP_DIR}/package-lock.json
-COPY ./package.json         ${APP_DIR}/package.json
-
-RUN echo "Building ${NODE_ENV}..."
-
-FROM build as development
-
-ONBUILD RUN npm install --no-optional --force
-ONBUILD COPY . ${APP_DIR}/
-
-FROM build as production
-
-ONBUILD RUN apk add --update \
+RUN apk add --update \
   python \
   python-dev \
   py-pip \
   && rm -rf /var/cache/apk/*
-ONBUILD RUN VP_ARTIFACTORY_TOKEN=${VP_ARTIFACTORY_TOKEN} npm ci
 
-ONBUILD COPY ./config       ${APP_DIR}/config
+COPY ./package-lock.json    ${APP_DIR}/package-lock.json
+COPY ./package.json         ${APP_DIR}/package.json
+
+RUN npm ci
+
+RUN echo "Building ${NODE_ENV}..."
+
+FROM base as development
+
+ONBUILD COPY . ${APP_DIR}/
+
+FROM base as production
+
 ONBUILD COPY ./dist         ${APP_DIR}/dist
 
 FROM ${NODE_ENV}
 
-CMD ["npx", "pm2-runtime", "ecosystem.config.js"]
+COPY --from=build ${APP_DIR} .
+
+CMD ["node", "--max-old-space=4096", "./dist/server.js"]

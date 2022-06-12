@@ -3,7 +3,6 @@ const path = require('path');
 module.exports = {
     env: {
         browser: true,
-        'jest/globals': true,
     },
     extends: [
         'airbnb',
@@ -41,7 +40,7 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
         tsconfigRootDir: __dirname,
-        ecmaVersion: 11,
+        ecmaVersion: 12,
         ecmaFeatures: {
             jsx: true,
         },
@@ -51,7 +50,6 @@ module.exports = {
     plugins: [
         '@typescript-eslint',
         'import',
-        'jest',
         'react',
     ],
     rules: {

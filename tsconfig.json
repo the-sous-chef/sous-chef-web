@@ -12,6 +12,7 @@
         "jsx": "react-jsx",
         "lib": [
             "ESNext",
+            "DOM.Iterable",
             "DOM"
         ],
         "module": "ESNext",
@@ -26,11 +27,7 @@
         "sourceMap": true,
         "sourceRoot": "/",
         "strict": true,
-        "target": "ES2018",
-        "types": [
-            "react/next",
-            "react-dom/next"
-        ]
+        "target": "ES2018"
     },
     "exclude": [
         "*.js",
