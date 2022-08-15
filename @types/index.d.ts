@@ -1,21 +1,22 @@
 declare namespace App {
-    export type AllowedEnvironments = 'production' | 'development';
+    export type ClientConfig = App.ConfigLike & {};
 
-    export type Config = App.DefaultConfig & {
+    export type ServerConfig = App.ConfigLike & {
         backlog: number;
+        caching?: {
+            maxAge: number;
+        },
         hostname: string;
         port: number;
         proxy?: boolean;
         compress?: import('koa-compress').CompressOptions;
         appName: string;
-        defaultCulture: string;
-        environment: App.AllowedEnvironments;
-        deployment: string;
+        defaultLocale: string;
         auth0: App.Auth0Config;
-        firebase: App.FirebaseConfig;
-        services: {
-            gateway: App.ServiceConfig;
-        }
+    };
+
+    export type ServicesConfig = App.ConfigLike & {
+        gateway: App.ServiceConfig;
     };
 
     export type Auth0Config = {
@@ -23,25 +24,33 @@ declare namespace App {
         domain: string;
     };
 
-    export type Credentials = import('@auth0/auth0-spa-js').User & {
-        firebaseCredentials?: import('@firebase/auth-types').OAuthCredential;
-    };
+    export type Credentials = import('@auth0/auth0-spa-js').User;
 
-    export interface DefaultConfig {
+    export interface ConfigLike {
         [key: string]: string | number | boolean;
     }
-
-    export type FirebaseConfig = {
-        apiKey: string;
-        authDomain: string;
-        projectId: string;
-        storageBucket: string;
-        messagingSenderId: string;
-        appId: string;
-        measurementId: string;
-    };
 
     export type ServiceConfig = import('ky').Options & {
         prefixUrl: string;
     }
+
+    export type Logger = import('pino').Logger;
+
+    export type TemplateConfig = {
+        development: boolean;
+        devServer: {
+            hostname: string;
+            port: number;
+        };
+        manifest: import('vite').Manifest;
+        publicPath: string;
+    };
+
+    export type ServerContext = import('koa').DefaultContext & {
+        config: ServerConfig;
+    }
+
+    export type ServerState = import('koa').DefaultState & {
+        locale: string;
+    };
 }

@@ -22,6 +22,8 @@ junit.xml
 
 # API keys and secrets
 .env
+.env.local
+.env.*.local
 
 # Dependency directory
 node_modules

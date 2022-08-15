@@ -16,7 +16,7 @@
             "DOM"
         ],
         "module": "ESNext",
-        "moduleResolution": "node",
+        "moduleResolution": "NodeNext",
         "newLine": "lf",
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
@@ -27,11 +27,10 @@
         "sourceMap": true,
         "sourceRoot": "/",
         "strict": true,
-        "target": "ES2018"
+        "target": "ES2022",
+        "useDefineForClassFields": true
     },
     "exclude": [
-        "*.js",
-        "node_modules/**/*",
-        ".vscode/**/*"
+        "node_modules",
     ]
 }
