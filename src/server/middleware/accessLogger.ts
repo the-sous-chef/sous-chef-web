@@ -21,8 +21,7 @@ export const accessLogger = (logger: App.Logger, format = 'combined', opts: Reco
 
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         await new Promise((resolve, reject) => {
-            // @ts-ignore
-            morganLogger(ctx.req, ctx.res, (err: Error) => (err ? reject(err) : resolve(ctx)));
+            morganLogger(ctx.req, ctx.res, (err?: Error) => (err ? reject(err) : resolve(ctx)));
         });
 
         await next();

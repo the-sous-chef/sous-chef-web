@@ -42,11 +42,13 @@ module.exports = {
     ],
     rules: {
         // 'class-methods-use-this': 'off',
-        // 'import/extensions': ['error', {
-        //     json: 'always',
-        //     js: 'never',
-        //     ts: 'never',
-        // }],
+        'import/extensions': ['error', {
+            json: 'always',
+            js: 'never',
+            jsx: 'never',
+            ts: 'never',
+            tsx: 'never',
+        }],
         // 'import/no-default-export': 'error',
         // 'import/no-extraneous-dependencies': ['error', {
         //     devDependencies: [
@@ -78,7 +80,7 @@ module.exports = {
         // 'no-bitwise': 'off',
         // // Boolean logic is boolean logic. Developers hsould understand order of operations.
         // 'no-mixed-operators': 'off',
-        // 'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
+        'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
         // // This is an old rule that is slowly not applicable anymore (i.e. for-of is ok now)
         // 'no-restricted-syntax': 'off',
         // 'no-shadow': 'off',
@@ -178,7 +180,6 @@ module.exports = {
                 extensions: ['.js', '.jsx', '.ts', '.tsx'],
                 moduleDirectory: ['node_modules', 'src'],
             },
-            project: {},
             typescript: {
                 alwaysTryTypes: true,
             },

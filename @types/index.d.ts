@@ -1,5 +1,5 @@
 declare namespace App {
-    export type ClientConfig = App.ConfigLike & {};
+    export type ClientConfig = App.ConfigLike;
 
     export type ServerConfig = App.ConfigLike & {
         backlog: number;
@@ -24,7 +24,7 @@ declare namespace App {
         domain: string;
     };
 
-    export type Credentials = import('@auth0/auth0-spa-js').User;
+    // export type Credentials = import('@auth0/auth0-spa-js').User;
 
     export interface ConfigLike {
         [key: string]: string | number | boolean;

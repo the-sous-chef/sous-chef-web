@@ -93,5 +93,8 @@
   "bugs": {
     "url": "https://github.com/cookbookly/sous-chef/issues"
   },
-  "homepage": "https://github.com/cookbookly/sous-chef#readme"
+  "homepage": "https://github.com/cookbookly/sous-chef#readme",
+  "volta": {
+    "node": "16.17.0"
+  }
 }
