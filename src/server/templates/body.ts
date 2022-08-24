@@ -1,7 +1,11 @@
-import { Manifest, ManifestChunk } from 'vite';
+import { extractJsAssets } from 'src/server/utils/manifest';
+import type { Manifest, ManifestChunk } from 'vite';
 
-const generateReactRefreshSnippet = (hostname: string, port: number): string => `
-<script type="module">
+const generateReactRefreshSnippet = (
+    hostname: string | undefined,
+    port: number | undefined,
+): string => `
+<script async type="module">
     import RefreshRuntime from 'http://${hostname}:${port}';/@react-refresh'
     RefreshRuntime.injectIntoGlobalHook(window)
     window.$RefreshReg$ = () => {}
@@ -13,8 +17,8 @@ const generateReactRefreshSnippet = (hostname: string, port: number): string => 
 const generateJsScript = (
     entry: ManifestChunk,
     development: boolean,
-    hostname: string,
-    port: number,
+    hostname: string | undefined,
+    port: number | undefined,
     publicPath: string,
 ): string => `
 <script
@@ -26,11 +30,11 @@ const generateJsScript = (
 
 const generateJsScripts = (
     development: boolean,
-    hostname: string,
-    port: number,
+    hostname: string | undefined,
+    port: number | undefined,
     publicPath: string,
     manifest: Manifest,
-): string => Object.values(manifest)
+): string => extractJsAssets(manifest)
     .map((entry) => generateJsScript(entry, development, hostname, port, publicPath))
     .join('');
 
@@ -42,7 +46,7 @@ export const top = (config: App.TemplateConfig): string => {
 
     return (`
         ${development && generateReactRefreshSnippet(hostname, port)}
-        <div id="root">
+        <div id="root">\
     `);
 };
 
@@ -55,9 +59,9 @@ export const bottom = (config: App.TemplateConfig): string => {
     // TODO consolidate
     const publicPath = config.publicPath ? `${config.publicPath}/` : '';
 
-    return (`
+    return (`\
         </div>
         ${generateJsScripts(development, hostname, port, publicPath, manifest)}
-        ${development ? `<script type="module" src="http://${hostname}:${port}/src/client/browser.tsx"></script>` : ''}
     `);
+    // ${development ? `<script type="module" src="http://${hostname}:${port}/src/client/browser.tsx"></script>` : ''}
 };

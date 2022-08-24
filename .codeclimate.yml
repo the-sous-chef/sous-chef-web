@@ -1,0 +1,22 @@
+version: "2"
+plugins:
+  stylelint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
+  eslint:
+    enabled: true
+    channel: 'channel/eslint-8'
+  fixme:
+    enabled: true
+  nodesecurity:
+    enabled: true
+exclude_patterns:
+  - dist/
+  - "**/node_modules/"
+  - "**/test/"
+  - "**/tests/"
+  - "**/*.d.ts"

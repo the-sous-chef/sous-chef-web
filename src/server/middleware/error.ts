@@ -2,6 +2,8 @@ import { v4 as uuid } from 'uuid';
 import { Next, ParameterizedContext } from 'koa';
 import { HTTPError } from 'ky';
 import { ServerError } from 'src/server/utils/errors';
+import * as Sentry from '@sentry/node';
+import { runSentryErrorProcessing } from 'src/server/utils/sentry';
 
 const DEFAULT_STATUS = 500;
 
@@ -27,13 +29,17 @@ export const error = async (ctx: ParameterizedContext, next: Next): Promise<void
         ctx.status = (e as HTTPError).response?.status || (e as any).status || DEFAULT_STATUS;
         const { status, request } = ctx;
 
-        ctx.log.error({
-            locale: ctx.state.locale,
-            guid,
-            request,
-            status,
-            ...(e as Error),
-        }, (e as Error).message);
+        Sentry.withScope((scope) => {
+            runSentryErrorProcessing(ctx, scope);
+            scope.addEventProcessor((event) => Sentry.addRequestDataToEvent(event, ctx.request));
+            ctx.log.error({
+                locale: ctx.state.locale,
+                guid,
+                request,
+                status,
+                ...(e as Error),
+            }, (e as Error).message);
+        });
 
         ctx.response.set('Cache-Control', 'public, max-age=0');
         ctx.response.set('Guid', guid);

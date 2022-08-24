@@ -1,18 +1,43 @@
 version: "3.6"
 services:
-  app:
+  ssr:
     build:
-      context: .
-      args:
-        DEBUG: ${DEBUG}
-        NODE_ENV: development
-    command: npm run start:dev
-    container_name: sous-chef-ssr-dev
+        context: .
+        args:
+          DEBUG: ${DEBUG}
+          NODE_ENV: development
+    command: ./dev.sh --install --target server
+    container_name: the-sous-chef-web-ssr
+    platform: linux/amd64
     env_file: .env
     ports:
       - "3000:80"
       # Node debug ports
       - "9229:9229"
     volumes:
-      - "./@types:/opt/app/@types"
-      - "./src:/opt/app/src"
+        - "./@types:/opt/app/@types:ro"
+        - "./public:/opt/app/public:ro"
+        - "./src:/opt/app/src:ro"
+        - "./node_modules:/opt/app/node_modules"
+        - "~/.aws:/root/.aws:ro"
+
+  hmr:
+    build:
+        context: .
+        args:
+          DEBUG: ${DEBUG}
+          NODE_ENV: development
+    command: ./dev.sh --install --target client
+    container_name: the-sous-chef-web-hmr
+    platform: linux/amd64
+    env_file: .env
+    ports:
+      # Node debug ports
+      - "9222:9222"
+      # Dev middleware ws port
+      - "5173:5173"
+    volumes:
+        - "./@types:/opt/app/@types:ro"
+        - "./public:/opt/app/public:ro"
+        - "./src:/opt/app/src:ro"
+        - "./node_modules:/opt/app/node_modules"

@@ -1,11 +1,12 @@
 import { i18n as i18next } from 'i18next';
-import { Manifest } from 'vite';
+import { extractCssAssets } from 'src/server/utils/manifest';
+import type { Manifest } from 'vite';
 
 const generateCssScript = (
     file: string,
     development: boolean,
-    hostname: string,
-    port: number,
+    hostname: string | undefined,
+    port: number | undefined,
     publicPath: string,
 ): string => `
 <link rel="stylesheet" href="://${development ? `${hostname}:${port}` : ''}/${publicPath}${file}">
@@ -13,13 +14,12 @@ const generateCssScript = (
 
 const generateCssScripts = (
     development: boolean,
-    hostname: string,
-    port: number,
+    hostname: string | undefined,
+    port: number | undefined,
     publicPath: string,
     manifest: Manifest,
-): string => Object.values(manifest)
-    .flatMap((entry) => entry.css?.map((css) => generateCssScript(css, development, hostname, port, publicPath)))
-    .filter(Boolean)
+): string => extractCssAssets(manifest)
+    .flatMap((entry) => generateCssScript(entry.file, development, hostname, port, publicPath))
     .join('');
 
 // TODO critical css

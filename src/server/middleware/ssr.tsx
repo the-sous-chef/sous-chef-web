@@ -1,15 +1,16 @@
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
 import { Next, ParameterizedContext } from 'koa';
 import { head } from 'src/server/templates/head';
 import { bottom, top } from 'src/server/templates/body';
 import { init } from 'src/server/lib/i18n';
 import { renderToPipeableStream } from 'react-dom/server';
-import { Manifest } from 'vite';
-import { App } from 'src/client/ssr';
-import path from 'path';
+import { SSR } from 'src/client/ssr';
+import path from 'node:path';
 import i18next from 'i18next';
 import isbot from 'isbot';
 import { Writable } from 'node:stream';
+import { QueryClient } from '@tanstack/react-query';
+import type { Manifest } from 'vite';
 
 // TODO config
 const ABORT_DELAY = 10000;
@@ -28,12 +29,23 @@ function loadViteManifest(): Manifest {
 const manifest = loadViteManifest();
 
 export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-    const context = {
+    let span;
+
+    if (ctx.state.transaction) {
+        span = ctx.state.transaction.startChild({
+            description: ctx.route,
+            op: 'ssr',
+        });
+    }
+
+    const queryClient = new QueryClient();
+    const development = process.env.NODE_ENV === 'development';
+    const context: App.TemplateConfig = {
         manifest,
-        development: process.env.NODE_ENV === 'development',
+        development,
         devServer: {
-            hostname: 'localhost',
-            port: 5173,
+            hostname: process.env.HOSTNAME,
+            port: process.env.PORT ? parseInt(process.env.PORT as string, 10) : undefined,
         },
         publicPath: '',
     };
@@ -58,9 +70,9 @@ export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> 
 
     const p = new Promise<void>((resolve, reject): void => {
         const { pipe, abort } = renderToPipeableStream(
-            <App />,
+            <SSR queryClient={queryClient} />,
             {
-                bootstrapModules: ['/main.js'],
+                bootstrapModules: ['src/client/browser.tsx'],
                 [callbackName]() {
                     ctx.respond = false;
                     ctx.res.statusCode = 200;
@@ -96,6 +108,12 @@ export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> 
     });
 
     await p;
+
+    queryClient.clear();
+
+    if (span) {
+        span.finish();
+    }
 
     return next();
 };

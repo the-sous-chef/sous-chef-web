@@ -1,7 +1,9 @@
 {
     "eslint.alwaysShowStatus": true,
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "editor.formatOnPaste": true,
+    "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
     "eslint.validate": [
         "javascript",
@@ -9,17 +11,6 @@
         "typescript",
         "typescriptreact"
     ],
+    "files.autoSave": "onFocusChange",
     "files.eol": "\n",
-    "[javascript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[javascriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescript]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[typescriptreact]": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
 }

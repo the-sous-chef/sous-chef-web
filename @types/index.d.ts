@@ -39,8 +39,8 @@ declare namespace App {
     export type TemplateConfig = {
         development: boolean;
         devServer: {
-            hostname: string;
-            port: number;
+            hostname: string | undefined;
+            port: number | undefined;
         };
         manifest: import('vite').Manifest;
         publicPath: string;
@@ -52,5 +52,6 @@ declare namespace App {
 
     export type ServerState = import('koa').DefaultState & {
         locale: string;
+        transaction: ReturnType<import('@sentry/node').Hub['startTransaction']>;
     };
 }

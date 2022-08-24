@@ -1,8 +1,11 @@
 const path = require('path');
 
 module.exports = {
+    root: true,
     env: {
         browser: true,
+        node: true,
+        es2022: true,
     },
     extends: [
         'airbnb',
@@ -11,14 +14,15 @@ module.exports = {
         'plugin:import/errors',
         'plugin:import/warnings',
         'plugin:import/typescript',
-        'prettier',
+        // 'prettier',
     ],
-    ignorePatterns: ['.eslintrc.js'],
+    ignorePatterns: ['.eslintrc.cjs'],
     overrides: [
         {
-            files: ['*.js', '*.cjs', 'vite.config.ts'],
+            files: ['*.js', '*.cjs', 'vite.*', 'vitest.config.ts', 'vitest/**/*'],
             rules: {
                 'import/no-extraneous-dependencies': 'off',
+                'import/no-named-default': 'off',
                 '@typescript-eslint/no-unused-vars': 'off',
                 '@typescript-eslint/no-var-requires': 'off',
             },
@@ -38,14 +42,14 @@ module.exports = {
         '@typescript-eslint',
         'import',
         'react',
-        'prettier',
+        // 'prettier',
     ],
     rules: {
         // 'class-methods-use-this': 'off',
         'import/extensions': ['error', {
             json: 'always',
-            js: 'never',
-            jsx: 'never',
+            // js: 'never',
+            // jsx: 'never',
             ts: 'never',
             tsx: 'never',
         }],
@@ -59,7 +63,7 @@ module.exports = {
         //     ],
         // }],
         'import/prefer-default-export': 'off',
-        // indent: 'off',
+        indent: 'off',
         // Override airbnb's max line length rule to:
         // - increase the line length limit to 120
         // - Set tab width to 4 spaces
@@ -88,16 +92,16 @@ module.exports = {
         // 'no-use-before-define': 'off',
         // 'react/function-component-definition': [2, { "namedComponents": "arrow-function" }],
         'react/jsx-filename-extension': ['error', { extensions: ['.jsx', '.tsx'] }],
-        // 'react/jsx-indent': ['error', 4],
-        // 'react/jsx-indent-props': ['error', 4],
+        'react/jsx-indent': ['error', 4],
+        'react/jsx-indent-props': ['error', 4],
         // // This is silly to enable
         // 'react/jsx-props-no-spreading': 'off',
-        // 'react/jsx-sort-props': ['error', {
-        //     callbacksLast: true,
-        //     ignoreCase: true,
-        //     noSortAlphabetically: true,
-        //     shorthandFirst: true,
-        // }],
+        'react/jsx-sort-props': ['error', {
+            callbacksLast: true,
+            ignoreCase: true,
+            noSortAlphabetically: false,
+            shorthandFirst: true,
+        }],
         'react/jsx-uses-react': 'off',
         'react/react-in-jsx-scope': 'off',
         // 'react/require-default-props': 'off',
@@ -112,7 +116,7 @@ module.exports = {
         // // - increase spacing from 2 to 4
         // // - disable call expression indentation
         // // Keep everything else
-        // '@typescript-eslint/indent': ['error', 4, {
+        '@typescript-eslint/indent': ['error', 4],
         //     SwitchCase: 1,
         //     VariableDeclarator: 1,
         //     outerIIFEBody: 1,
@@ -170,18 +174,16 @@ module.exports = {
             version: 'detect',
         },
         'import/parsers': {
-            '@typescript-eslint/parser': [
-                '.ts',
-                '.tsx',
-            ],
+            '@typescript-eslint/parser': ['.ts', '.tsx'],
         },
+        'import/extensions': ['.js', '.jsx', '.ts', '.tsx'],
         'import/resolver': {
             node: {
                 extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                moduleDirectory: ['node_modules', 'src'],
             },
             typescript: {
                 alwaysTryTypes: true,
+                project: path.resolve(__dirname, 'tsconfig.json'),
             },
         },
     },
