@@ -40,18 +40,18 @@ export class Server {
     }
 
     async start(): Promise<void> {
-        this.app.context.config = await getServerConfig();
-
-        const {
-            backlog,
-            hostname,
-            port,
-            proxy,
-        } = this.app.context.config;
-
-        this.app.proxy = !!proxy;
-
         try {
+            this.app.context.config = await getServerConfig();
+
+            const {
+                backlog,
+                hostname,
+                port,
+                proxy,
+            } = this.app.context.config;
+
+            this.app.proxy = !!proxy;
+
             this.app.use(error);
             this.app.use(sentry());
             this.app.use(locale);

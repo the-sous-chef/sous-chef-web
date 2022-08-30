@@ -1,6 +1,11 @@
 import pino from 'pino';
 
-const pipeline: pino.TransportSingleOptions<Record<string, unknown>>[] = [{ target: '../..shared/sentryTransport.ts' }];
+const pipeline: pino.TransportSingleOptions<Record<string, unknown>>[] = [{
+    target: 'pino-sentry-transport',
+    options: {
+        minLevel: 40,
+    },
+}];
 
 if (process.env.NODE_ENV === 'development') {
     pipeline.push({ target: 'pino-pretty', options: { colorize: true } });

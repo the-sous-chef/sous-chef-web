@@ -18,6 +18,7 @@ const dehydratedState = (window as unknown as Window & { __REACT_QUERY_STATE__: 
 
 // TODO https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
 Sentry.init({
+    debug: process.env.NODE_ENV !== 'production',
     dsn: process.env.SENTRY_DSN,
     environment: process.env.DEPLOYMENT,
     integrations: [new BrowserTracing()],

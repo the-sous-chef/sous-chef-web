@@ -3,9 +3,9 @@
 import * as Sentry from '@sentry/node';
 import { extractTraceparentData, stripUrlQueryAndFragment } from '@sentry/tracing';
 import { Next, ParameterizedContext } from 'koa';
-// @ts-expect-error not sure why this isn't expose
-import { addRequestDataToEvent, isAutoSessionTrackingEnabled, flush } from '@sentry/node/esm/sdk';
-import { logger } from '@sentry/utils';
+import utils from '@sentry/utils';
+
+const { addRequestDataToEvent, logger } = utils;
 
 export type RequestHandlerOptions = Sentry.AddRequestDataToEventOptions & {
     flushTimeout?: number;
@@ -19,7 +19,7 @@ export const sentry = (
 
     // Initialise an instance of SessionFlusher on the client when `autoSessionTracking` is enabled and the
     // `requestHandler` middleware is used indicating that we are running in SessionAggregates mode
-    if (client && isAutoSessionTrackingEnabled(client)) {
+    if (client) {
         client.initSessionFlusher();
 
         // If Scope contains a Single mode Session, it is removed in favor of using Session Aggregates mode
@@ -46,7 +46,7 @@ export const sentry = (
                 encoding: BufferEncoding,
                 cb?: (() => void) | undefined,
             ) => {
-                flush(options.flushTimeout)
+                Sentry.flush(options.flushTimeout)
                     .then(() => {
                         _end.call(this, chunk, encoding, cb);
                     })
@@ -73,33 +73,25 @@ export const sentry = (
             scope.setSpan(ctx.state.transaction);
             scope.addEventProcessor(eventProcessor);
 
-            const scopedClient = currentHub.getClient<Sentry.NodeClient>();
-
-            if (isAutoSessionTrackingEnabled(scopedClient)) {
-                // Set `status` of `RequestSession` to Ok, at the beginning of the request
-                scope.setRequestSession({ status: 'ok' });
-            }
+            // Set `status` of `RequestSession` to Ok, at the beginning of the request
+            scope.setRequestSession({ status: 'ok' });
         });
 
         ctx.res.on('finish', () => {
             const scopedClient = currentHub.getClient<Sentry.NodeClient>();
 
-            if (isAutoSessionTrackingEnabled(scopedClient)) {
-                setImmediate(() => {
-                    // @ts-expect-error access protected method
-                    if (scopedClient && scopedClient._captureRequestSession) {
-                        // Calling _captureRequestSession to capture request session at the end
-                        // of the request by incrementing the correct SessionAggregates bucket
-                        // i.e. crashed, errored or exited
-                        // @ts-expect-error access protected method
-                        scopedClient._captureRequestSession();
-                    }
-                });
-            }
-
             // Push `transaction.finish` to the next event loop so open spans have a chance to
             // finish before the transaction closes
             setImmediate(() => {
+                // @ts-expect-error access protected method
+                if (scopedClient && scopedClient._captureRequestSession) {
+                    // Calling _captureRequestSession to capture request session at the end
+                    // of the request by incrementing the correct SessionAggregates bucket
+                    // i.e. crashed, errored or exited
+                    // @ts-expect-error access protected method
+                    scopedClient._captureRequestSession();
+                }
+
                 // if using koa router, a nicer way to capture transaction using the matched route
                 if (ctx._matchedRoute) {
                     const mountPath = ctx.mountPath || '';

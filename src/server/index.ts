@@ -4,6 +4,8 @@ import { CaptureConsole, Debug } from '@sentry/integrations';
 import '@sentry/tracing';
 
 Sentry.init({
+    autoSessionTracking: true,
+    debug: process.env.NODE_ENV !== 'production',
     dsn: process.env.SENTRY_DSN,
     environment: process.env.DEPLOYMENT,
     integrations: [
@@ -13,14 +15,11 @@ Sentry.init({
     ].filter(Boolean) as Sentry.NodeOptions['integrations'],
     release: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
     tracesSampleRate: 1.0,
+
 });
 
-try {
-    const { Server } = await import('src/server/main');
-
-    const server = new Server();
+import('src/server/main').then((m) => {
+    const server = new m.Server();
 
     server.start();
-} catch (e) {
-    Sentry.captureException(e);
-}
+}).catch((e) => Sentry.captureException(e));

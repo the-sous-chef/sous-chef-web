@@ -32,6 +32,12 @@ export default defineConfig(({ mode }): UserConfig => {
             } : undefined,
         },
         optimizeDeps: {
+            // esbuildOptions: {
+            //     // @ts-expect-error typing error with plugin
+            //     plugins: [esbuildPluginPino({
+            //         transports: ['pino-pretty', path.resolve(__dirname, 'src/shared/sentryTransport.ts')],
+            //     })],
+            // },
             include: ['react/jsx-runtime'],
         },
         plugins: [

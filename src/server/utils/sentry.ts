@@ -1,7 +1,4 @@
 import * as Sentry from '@sentry/node';
-// @ts-expect-error not sure why this isn't expose
-// eslint-disable-next-line import/extensions
-import { isAutoSessionTrackingEnabled } from '@sentry/node/esm/sdk.js';
 import { ParameterizedContext } from 'koa';
 
 /**
@@ -20,7 +17,7 @@ export const runSentryErrorProcessing = (
 
     const client = Sentry.getCurrentHub().getClient<Sentry.NodeClient>();
 
-    if (client && isAutoSessionTrackingEnabled(client)) {
+    if (client) {
         // Check if the `SessionFlusher` is instantiated on the client to go into this branch that marks the
         // `requestSession.status` as `Crashed`, and this check is necessary because the `SessionFlusher` is only
         // instantiated when the the`requestHandler` middleware is initialised, which indicates that we should be
