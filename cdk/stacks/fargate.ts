@@ -1,4 +1,3 @@
-import { join } from 'path';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as patterns from 'aws-cdk-lib/aws-ecs-patterns';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
@@ -10,7 +9,6 @@ import * as route53 from 'aws-cdk-lib/aws-route53';
 import {
     CfnOutput, Stack, StackProps as CdkStackProps,
 } from 'aws-cdk-lib';
-import { DockerImageAsset } from 'aws-cdk-lib/aws-ecr-assets';
 import { Construct } from 'constructs';
 
 export interface StackProps extends CdkStackProps {
@@ -53,19 +51,6 @@ export class FargateStack extends Stack {
         const repository = ecr.Repository.fromRepositoryArn(this, `${id}EcrRepository`, repositoryArn);
         const certificate = acm.Certificate.fromCertificateArn(this, `${id}AcmCertificate`, certificateArn);
         const serviceName = root;
-
-        console.log(`Building docker image (${join(__dirname, '../../../Dockerfile')}) for '${serviceName}'...`);
-
-        const image = new DockerImageAsset(this, `${id}DockerImage`, {
-            directory: join(__dirname, '../../..'),
-            buildArgs: {
-                NODE_ENV: stage,
-            },
-        });
-
-        image.repository = repository;
-
-        console.log(`Building ${id}ALBFargate...`);
 
         const service = new patterns.ApplicationLoadBalancedFargateService(this, `${id}ALBFargate`, {
             certificate,
@@ -110,7 +95,7 @@ export class FargateStack extends Stack {
                     DEPLOYMENT: this.node.tryGetContext('deployment') || process.env.DEPLOYMENT,
                     NODE_ENV: stage,
                 },
-                image: ecs.ContainerImage.fromDockerImageAsset(image),
+                image: ecs.ContainerImage.fromEcrRepository(repository, 'latest'),
                 logDriver: ecs.LogDrivers.awsLogs({
                     streamPrefix: serviceName,
                     logRetention: logs.RetentionDays.THREE_MONTHS,

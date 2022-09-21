@@ -18,7 +18,7 @@ export class AppConfigStack extends Stack {
         const configurationBucket = new s3.Bucket(this, `${id}S3Bucket`, {
             autoDeleteObjects: false,
             blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
-            bucketName: `${appConfigName}-configuration `,
+            bucketName: `${appConfigName}-configuration`,
             encryption: s3.BucketEncryption.S3_MANAGED,
             removalPolicy: RemovalPolicy.RETAIN,
             versioned: true,
@@ -32,7 +32,7 @@ export class AppConfigStack extends Stack {
                         's3:GetObjectVersion',
                     ],
                     effect: iam.Effect.ALLOW,
-                    principals: [new iam.ServicePrincipal('appconfig.amazonaws.com')],
+                    // principals: [new iam.ServicePrincipal('appconfig.amazonaws.com')],
                     resources: [`${configurationBucket.bucketArn}/*`],
                 }),
                 new iam.PolicyStatement({
@@ -43,7 +43,7 @@ export class AppConfigStack extends Stack {
                         's3:ListBucket',
                     ],
                     effect: iam.Effect.ALLOW,
-                    principals: [new iam.ServicePrincipal('appconfig.amazonaws.com')],
+                    // principals: [new iam.ServicePrincipal('appconfig.amazonaws.com')],
                     resources: [configurationBucket.bucketArn],
                 }),
                 new iam.PolicyStatement({
@@ -68,7 +68,7 @@ export class AppConfigStack extends Stack {
 
         const application = new appconfig.CfnApplication(this, `${id}Application`, {
             name: appConfigName,
-            description: 'COnfiguration for The Sous Chef Web Application',
+            description: 'Configuration for The Sous Chef Web Application',
         });
 
         // Environments
@@ -115,6 +115,7 @@ export class AppConfigStack extends Stack {
         });
 
         // Deployment Strategies
+        // Waiting on https://github.com/localstack/localstack/issues/6892
         const defaultDeploymentStrategy = new appconfig.CfnDeploymentStrategy(this, `${id}DefaultDeploymentStrategy`, {
             deploymentDurationInMinutes: 5,
             finalBakeTimeInMinutes: 7,
