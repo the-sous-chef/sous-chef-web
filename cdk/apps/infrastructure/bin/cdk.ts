@@ -4,7 +4,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { EcsClusterStack } from 'stacks/ecsCluster';
 import { capitalize } from 'utils/capitalize';
-import { AppConfigStack } from 'stacks/appConfig';
+// import { AppConfigStack } from 'stacks/appConfig';
 import { EcrStack } from 'stacks/ecr';
 import { defaultStage, id, namespace } from 'config.json';
 
@@ -32,7 +32,8 @@ new EcsClusterStack(app, `${id}EcsCluster${capitalize(stage)}`, {
     vpcId,
 });
 
+// Waiting on https://github.com/localstack/localstack/issues/6892
 // eslint-disable-next-line no-new
-new AppConfigStack(app, `${id}AppConfig${capitalize(stage)}`, {
-    env,
-});
+// new AppConfigStack(app, `${id}AppConfig${capitalize(stage)}`, {
+//     env,
+// });

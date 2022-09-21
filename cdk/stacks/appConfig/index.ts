@@ -115,7 +115,6 @@ export class AppConfigStack extends Stack {
         });
 
         // Deployment Strategies
-        // Waiting on https://github.com/localstack/localstack/issues/6892
         const defaultDeploymentStrategy = new appconfig.CfnDeploymentStrategy(this, `${id}DefaultDeploymentStrategy`, {
             deploymentDurationInMinutes: 5,
             finalBakeTimeInMinutes: 7,
