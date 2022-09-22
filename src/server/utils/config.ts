@@ -5,10 +5,18 @@ import {
     StartConfigurationSessionCommand,
     ResourceNotFoundException,
 } from '@aws-sdk/client-appconfigdata';
+// Waiting on https://github.com/localstack/localstack/issues/6892
+// eslint-disable-next-line import/no-extraneous-dependencies
+import { mockClient } from 'aws-sdk-client-mock';
+import mockConfig from '../../../../../localstack/mocks/appConfig.json';
 
 const client = new AppConfigDataClient({ region: process.env.AWS_REGION });
+const mock = mockClient(client);
+
 let clientConfigToken: string;
 let serverConfigToken: string;
+
+mock.onAnyCommand().resolves(mockConfig);
 
 const toString = (arr: Uint8Array): string => (
     arr instanceof Uint8Array ? new TextDecoder().decode(arr) : arr as string

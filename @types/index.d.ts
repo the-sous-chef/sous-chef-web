@@ -54,4 +54,6 @@ declare namespace App {
         locale: string;
         transaction: ReturnType<import('@sentry/node').Hub['startTransaction']>;
     };
+
+    export type Server = import('ky').Koa<App.ServerState, App.ServerContext> & { server: ReturnType<import('ky').Koa['listen']> }
 }
