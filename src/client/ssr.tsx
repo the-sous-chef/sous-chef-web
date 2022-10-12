@@ -1,19 +1,16 @@
 import { RecoilRoot } from 'recoil';
 import {
-    dehydrate,
-    Hydrate,
-    QueryClient,
-    QueryClientProvider,
+    DehydratedState, Hydrate, QueryClient, QueryClientProvider,
 } from '@tanstack/react-query';
 import { App } from 'src/client/App';
 
 export type PropTypes = {
+    dehydratedState: DehydratedState;
     queryClient: QueryClient;
 };
 
 export function SSR(props: PropTypes): JSX.Element {
-    const { queryClient } = props;
-    const dehydratedState = dehydrate(queryClient);
+    const { dehydratedState, queryClient } = props;
 
     return (
         <QueryClientProvider client={queryClient}>
@@ -22,9 +19,6 @@ export function SSR(props: PropTypes): JSX.Element {
                     <App />
                 </RecoilRoot>
             </Hydrate>
-            <script>
-                {`window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState)};`}
-            </script>
         </QueryClientProvider>
     );
 }

@@ -1,19 +1,13 @@
 import { readFileSync } from 'node:fs';
 import { Next, ParameterizedContext } from 'koa';
-import { head } from 'src/server/templates/head';
-import { bottom, top } from 'src/server/templates/body';
-import { init } from 'src/server/lib/i18n';
-import { renderToPipeableStream } from 'react-dom/server';
-import { SSR } from 'src/client/ssr';
+import { init } from 'src/server/utils/i18n';
 import path from 'node:path';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { render } from 'src/server/utils/renderNodeStream';
+import { body } from 'src/server/fragments/body';
+import { head } from 'src/server/fragments/head';
 import i18next from 'i18next';
-import isbot from 'isbot';
-import { Writable } from 'node:stream';
-import { QueryClient } from '@tanstack/react-query';
 import type { Manifest } from 'vite';
-
-// TODO config
-const ABORT_DELAY = 10000;
 
 function loadViteManifest(): Manifest {
     try {
@@ -29,91 +23,64 @@ function loadViteManifest(): Manifest {
 const manifest = loadViteManifest();
 
 export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> => {
-    let span;
-
-    if (ctx.state.transaction) {
-        span = ctx.state.transaction.startChild({
+    const span = ctx.state.transaction
+        ? ctx.state.transaction.startChild({
             description: ctx.route,
             op: 'ssr',
-        });
-    }
+        })
+        : null;
 
     const queryClient = new QueryClient();
     const development = process.env.NODE_ENV === 'development';
-    const context: App.TemplateConfig = {
+    const context: App.RenderContext = {
         manifest,
         development,
+        dehydratedState: dehydrate(queryClient),
         devServer: {
             hostname: process.env.HOSTNAME,
             port: process.env.PORT ? parseInt(process.env.PORT as string, 10) : undefined,
         },
-        publicPath: '',
+        publicPath: ctx.app.context.config.publicPath,
+    };
+    const close = (): void => {
+        queryClient.clear();
+
+        if (span) {
+            span.finish();
+        }
     };
 
     await init(ctx.state.locale);
 
-    const isBot = isbot(ctx.headers['user-agent']);
-    const callbackName = isBot ? 'onAllReady' : 'onShellReady';
+    ctx.status = 200;
+    ctx.type = 'text/html';
 
-    ctx.response.set('content-type', 'text/html');
-    ctx.res.write(`<!DOCTYPE html><html lang="${i18next.language}"><head>${head(context, i18next)}`);
-
-    const stream = new Writable({
-        write(chunk, _encoding, cb): void {
-            ctx.res.write(chunk, cb);
-        },
-        final(): void {
-            ctx.res.write(bottom(context));
-            ctx.res.end('</body></html>');
-        },
+    const stream = render(
+        ctx,
+        context,
+        i18next.language,
+        queryClient,
+        () => body(context),
+        () => head(context, i18next),
+    );
+    const waiter = new Promise<void>((resolve, reject) => {
+        stream.on('error', (e) => {
+            close();
+            reject(e);
+        });
+        stream.on('finish', () => {
+            try {
+                close();
+                resolve();
+            } catch (e) {
+                reject(e);
+            }
+        });
     });
 
-    const p = new Promise<void>((resolve, reject): void => {
-        const { pipe, abort } = renderToPipeableStream(
-            <SSR queryClient={queryClient} />,
-            {
-                bootstrapModules: ['src/client/browser.tsx'],
-                [callbackName]() {
-                    ctx.respond = false;
-                    ctx.res.statusCode = 200;
-                    // TODO collect head from react injecting preload?
-                    ctx.res.write(`</head><body>${top(context)}`);
-                    resolve();
-                },
-                onShellError(e) {
-                    if (isBot) {
-                        ctx.res.statusCode = 500;
-                    }
+    ctx.body = stream;
 
-                    // TODO different shell?
-                    ctx.res.write('</head><body><p>Error Loading...</p>');
-                    reject(e);
-                },
-                onError(e) {
-                    if (isBot) {
-                        ctx.res.statusCode = 500;
-                    }
-
-                    ctx.log.error(e, (e as Error).message);
-                },
-            },
-        );
-
-        pipe(stream);
-
-        setTimeout(() => {
-            abort();
-            reject();
-        }, ABORT_DELAY);
-    });
-
-    await p;
-
-    queryClient.clear();
-
-    if (span) {
-        span.finish();
-    }
+    await waiter;
 
     return next();
 };

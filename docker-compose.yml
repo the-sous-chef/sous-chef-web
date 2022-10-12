@@ -15,9 +15,9 @@ services:
       # Node debug ports
       - "9229:9229"
     volumes:
-        - "./@types:/opt/app/@types:ro"
-        - "./public:/opt/app/public:ro"
-        - "./src:/opt/app/src:ro"
+        - "./@types:/opt/app/@types"
+        - "./public:/opt/app/public"
+        - "./src:/opt/app/src"
         - "./node_modules:/opt/app/node_modules"
         - "~/.aws:/root/.aws:ro"
 
@@ -37,7 +37,7 @@ services:
       # Dev middleware ws port
       - "5173:5173"
     volumes:
-        - "./@types:/opt/app/@types:ro"
-        - "./public:/opt/app/public:ro"
-        - "./src:/opt/app/src:ro"
+        - "./@types:/opt/app/@types"
+        - "./public:/opt/app/public"
+        - "./src:/opt/app/src"
         - "./node_modules:/opt/app/node_modules"

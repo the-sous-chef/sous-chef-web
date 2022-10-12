@@ -36,12 +36,10 @@ FROM base as build
 
 RUN apk update && apk upgrade
 
-COPY ./package-lock.json        ${APP_DIR}/package-lock.json
-COPY ./package.json             ${APP_DIR}/package.json
-COPY ./etc/dev.sh               ${APP_DIR}/dev.sh
-COPY ./etc/install-esbuild.sh   ${APP_DIR}/install-esbuild.sh 
-
-RUN npm ci --force --ignore-scripts
+COPY ./package-lock.json            ${APP_DIR}/package-lock.json
+COPY ./package.json                 ${APP_DIR}/package.json
+COPY ./scripts/dev.sh               ${APP_DIR}/dev.sh
+COPY ./scripts/install-esbuild.sh   ${APP_DIR}/install-esbuild.sh 
 
 RUN echo "Building ${NODE_ENV}..."
 
@@ -50,6 +48,8 @@ FROM base as development
 ONBUILD COPY .                  ${APP_DIR}/
 
 FROM base as production
+
+ONBUILD RUN npm ci --force --ignore-scripts
 
 ONBUILD COPY ./dist             ${APP_DIR}/dist
 

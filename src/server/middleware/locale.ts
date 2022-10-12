@@ -48,5 +48,5 @@ const determineLocale = (localeHeader: string | string[] | undefined, ctx: Param
 export const locale = async (ctx: ParameterizedContext, next: Next): Promise<void> => {
     ctx.state.locale = determineLocale(ctx.headers['Accept-Language'], ctx) || ctx.config.defaultLocale;
 
-    await next();
+    return next();
 };

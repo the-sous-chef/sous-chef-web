@@ -1,6 +1,19 @@
 import * as Sentry from '@sentry/node';
 import { ParameterizedContext } from 'koa';
 
+export function isAutoSessionTrackingEnabled(client: Sentry.NodeClient | undefined): boolean {
+    if (client === undefined) {
+        return false;
+    }
+
+    const clientOptions = client && client.getOptions();
+
+    if (clientOptions && clientOptions.autoSessionTracking !== undefined) {
+        return clientOptions.autoSessionTracking;
+    }
+    return false;
+}
+
 /**
  *
  */
@@ -9,7 +22,7 @@ export const runSentryErrorProcessing = (
     scope: Sentry.Scope,
 ) => {
     // For some reason we need to set the transaction on the scope again
-    const { transaction } = ctx.context;
+    const { transaction } = ctx.state;
 
     if (transaction && scope.getSpan() === undefined) {
         scope.setSpan(transaction);
@@ -17,7 +30,7 @@ export const runSentryErrorProcessing = (
 
     const client = Sentry.getCurrentHub().getClient<Sentry.NodeClient>();
 
-    if (client) {
+    if (client && isAutoSessionTrackingEnabled(client)) {
         // Check if the `SessionFlusher` is instantiated on the client to go into this branch that marks the
         // `requestSession.status` as `Crashed`, and this check is necessary because the `SessionFlusher` is only
         // instantiated when the the`requestHandler` middleware is initialised, which indicates that we should be

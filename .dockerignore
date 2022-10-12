@@ -8,6 +8,3 @@ node_modules
 public
 src
 README.md
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*

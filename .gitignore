@@ -47,3 +47,5 @@ dist
 # Local configuration
 local.json5
 .cache
+.yalc
+yalc.lock

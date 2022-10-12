@@ -7,5 +7,5 @@ export const livecheck = async (ctx: ParameterizedContext, next: Next): Promise<
 
     // newrelic.getTransaction().ignore();
 
-    await next();
+    return next();
 };

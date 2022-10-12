@@ -28,16 +28,16 @@ export default defineConfig(({ mode }): UserConfig => {
                 chokidar: {
                     usePolling: isWin,
                 },
-                exclude: ['node_modules/**', 'src/client/**'],
+                exclude: ['node_modules', '.git', 'src/client'],
+                include: [
+                    '@types',
+                    'src/server',
+                    'src/shared',
+                    'src/client/ssr.tsx',
+                ],
             } : undefined,
         },
         optimizeDeps: {
-            // esbuildOptions: {
-            //     // @ts-expect-error typing error with plugin
-            //     plugins: [esbuildPluginPino({
-            //         transports: ['pino-pretty', path.resolve(__dirname, 'src/shared/sentryTransport.ts')],
-            //     })],
-            // },
             include: ['react/jsx-runtime'],
         },
         plugins: [
@@ -45,8 +45,11 @@ export default defineConfig(({ mode }): UserConfig => {
                 delimiters: ['', ''],
                 preventAssignment: false,
                 values: {
+                    'process.env.DEBUG_BUILD': JSON.stringify(process.env.DEBUG_BUILD),
                     'process.env.DEPLOYMENT': JSON.stringify(process.env.DEPLOYMENT || 'production'),
+                    'process.env.LOGROCKET_ACCOUNT_ID': JSON.stringify(process.env.LOGROCKET_ACCOUNT_ID),
                     'process.env.NODE_ENV': JSON.stringify(mode),
+                    'process.env.RELEASE': JSON.stringify(process.env.RELEASE),
                     'process.env.SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
                 },
             }),

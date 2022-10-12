@@ -1,4 +1,6 @@
 // import 'newrelic';
+// eslint-disable-next-line import/extensions
+import 'source-map-support/register.js';
 import * as Sentry from '@sentry/node';
 import { CaptureConsole, Debug } from '@sentry/integrations';
 import '@sentry/tracing';
@@ -6,7 +8,7 @@ import compress from 'koa-compress';
 import helmet from 'koa-helmet';
 import Koa from 'koa';
 import cors from '@koa/cors';
-import logger from 'koa-pino-logger';
+import { logger } from 'src/server/middleware/logger';
 import { locale } from 'src/server/middleware/locale';
 import { setCacheHeader } from 'src/server/middleware/cacheHeaders';
 import { error } from 'src/server/middleware/error';
@@ -16,25 +18,35 @@ import { router } from 'src/server/router';
 import { getServerConfig } from 'src/server/utils/config';
 import { sentry } from 'src/server/middleware/sentry';
 import { handleError } from 'src/server/utils/handleError';
-
-const LOGGER = getLogger();
-
-Sentry.init({
-    autoSessionTracking: true,
-    debug: process.env.NODE_ENV !== 'production',
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.DEPLOYMENT,
-    integrations: [
-        new Sentry.Integrations.Http({ tracing: true }),
-        new CaptureConsole(),
-        process.env.NODE_ENV === 'development' ? new Debug() : null,
-    ].filter(Boolean) as Sentry.NodeOptions['integrations'],
-    release: `${process.env.npm_package_name}@${process.env.npm_package_version}`,
-    tracesSampleRate: 1.0,
-
-});
+import { beforeSend } from 'src/shared/sentry';
+import LogRocket from 'logrocket';
 
 let app: App.Server;
+let LOGGER: App.Logger;
+
+try {
+    Sentry.init({
+        beforeSend,
+        autoSessionTracking: true,
+        debug: process.env.DEBUG_BUILD === 'true',
+        dsn: process.env.SENTRY_DSN,
+        environment: process.env.DEPLOYMENT,
+        integrations: [
+            new Sentry.Integrations.Http({ tracing: true }),
+            new CaptureConsole(),
+            process.env.NODE_ENV === 'development' ? new Debug() : null,
+        ].filter(Boolean) as Sentry.NodeOptions['integrations'],
+        release: process.env.RELEASE,
+        tracesSampleRate: 1.0,
+    });
+
+    // TODO identify user in request handler
+    LogRocket.init(process.env.LOGROCKET_ACCOUNT_ID as string);
+} catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(e);
+    process.exit(-1);
+}
 
 const stop = (): void => {
     Sentry.close(2000).then(() => {
@@ -45,8 +57,14 @@ const stop = (): void => {
 };
 
 try {
+    LOGGER = getLogger();
+} catch (e) {
+    Sentry.captureException(e);
+    process.exit(-1);
+}
+
+try {
     app = new Koa<App.ServerState, App.ServerContext>();
-    app.silent = true;
 
     // pm2 graceful shutdown compatibility
     // Catches ctrl+c event
@@ -93,6 +111,8 @@ try {
         },
     );
 } catch (e) {
+    LOGGER.error(e);
+    Sentry.captureException(e);
     stop();
 }
 

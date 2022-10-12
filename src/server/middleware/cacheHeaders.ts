@@ -15,5 +15,5 @@ export const setCacheHeader = (maxAge?: number) => async (ctx: ParameterizedCont
         ctx.response.set('Cache-Control', (cache === 'false') ? 'no-store' : `public, max-age=${maxAge}`);
     }
 
-    await next();
+    return next();
 };

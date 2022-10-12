@@ -32,6 +32,7 @@
         "useDefineForClassFields": true
     },
     "exclude": [
+        "cdk",
         "node_modules",
         "dist"
     ]

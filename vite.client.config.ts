@@ -38,8 +38,11 @@ export default defineConfig(({ mode }): UserConfig => {
                 delimiters: ['', ''],
                 preventAssignment: false,
                 values: {
+                    'process.env.DEBUG_BUILD': JSON.stringify(process.env.DEBUG_BUILD),
                     'process.env.DEPLOYMENT': JSON.stringify(process.env.DEPLOYMENT || 'production'),
+                    'process.env.LOGROCKET_ACCOUNT_ID': JSON.stringify(process.env.LOGROCKET_ACCOUNT_ID),
                     'process.env.NODE_ENV': JSON.stringify(mode),
+                    'process.env.RELEASE': JSON.stringify(process.env.RELEASE),
                     'process.env.SENTRY_DSN': JSON.stringify(process.env.SENTRY_DSN),
                 },
             }),

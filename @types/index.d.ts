@@ -2,6 +2,7 @@ declare namespace App {
     export type ClientConfig = App.ConfigLike;
 
     export type ServerConfig = App.ConfigLike & {
+        abortDelay: number;
         backlog: number;
         caching?: {
             maxAge: number;
@@ -9,6 +10,7 @@ declare namespace App {
         hostname: string;
         port: number;
         proxy?: boolean;
+        publicPath: string;
         compress?: import('koa-compress').CompressOptions;
         appName: string;
         defaultLocale: string;
@@ -36,12 +38,13 @@ declare namespace App {
 
     export type Logger = import('pino').Logger;
 
-    export type TemplateConfig = {
+    export type RenderContext = {
         development: boolean;
         devServer: {
             hostname: string | undefined;
             port: number | undefined;
         };
+        dehydratedState: import('@tanstack/react-query').DehydratedState;
         manifest: import('vite').Manifest;
         publicPath: string;
     };

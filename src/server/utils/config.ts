@@ -6,9 +6,7 @@ import {
     ResourceNotFoundException,
 } from '@aws-sdk/client-appconfigdata';
 // Waiting on https://github.com/localstack/localstack/issues/6892
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { mockClient } from 'aws-sdk-client-mock';
-import mockConfig from '../../../../../localstack/mocks/appConfig.json';
 
 const client = new AppConfigDataClient({ region: process.env.AWS_REGION });
 const mock = mockClient(client);
@@ -16,7 +14,21 @@ const mock = mockClient(client);
 let clientConfigToken: string;
 let serverConfigToken: string;
 
-mock.onAnyCommand().resolves(mockConfig);
+mock.onAnyCommand().resolves({
+    NextPollConfigurationToken: 'fake',
+    NextPollIntervalInSeconds: Infinity,
+    ContentType: 'string',
+    Configuration: Uint8Array.from(JSON.stringify({
+        abortDelay: 10000,
+        backlog: 999,
+        defaultLocale: 'en-US',
+        hostname: '0.0.0.0',
+        port: 80,
+        proxy: false,
+        publicPath: 'public',
+    } as App.ServerConfig).split('').map((x) => x.charCodeAt(0))),
+    $metadata: {},
+});
 
 const toString = (arr: Uint8Array): string => (
     arr instanceof Uint8Array ? new TextDecoder().decode(arr) : arr as string
@@ -60,10 +72,11 @@ export const getClientConfig = async (): Promise<App.ClientConfig> => {
         }
 
         throw new ResourceNotFoundException({
-            Message: 'No configuration found in response from AWS AppConfig',
+            message: 'No configuration found in response from AWS AppConfig',
             $metadata: response.$metadata,
         });
     } catch (err) {
+        // TODO add loop counter
         if (err instanceof BadRequestException) {
             clientConfigToken = await getClientConfigToken();
 
@@ -90,11 +103,12 @@ export const getServerConfig = async (): Promise<App.ServerConfig> => {
         }
 
         throw new ResourceNotFoundException({
-            Message: 'No configuration found in response from AWS AppConfig',
+            message: 'No configuration found in response from AWS AppConfig',
             $metadata: response.$metadata,
         });
     } catch (err) {
         if (err instanceof BadRequestException) {
+            // TODO add loop counter
             serverConfigToken = await getServerConfigToken();
 
             return getServerConfig();
