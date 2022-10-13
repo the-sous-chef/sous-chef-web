@@ -24,18 +24,15 @@ export default defineConfig(({ mode }): UserConfig => {
             sourcemap: true,
             ssr: true,
             target: 'esnext',
-            watch: dev ? {
-                chokidar: {
-                    usePolling: isWin,
-                },
-                exclude: ['node_modules', '.git', 'src/client'],
-                include: [
-                    '@types',
-                    'src/server',
-                    'src/shared',
-                    'src/client/ssr.tsx',
-                ],
-            } : undefined,
+            watch: dev
+                ? {
+                      chokidar: {
+                          usePolling: isWin,
+                      },
+                      exclude: ['node_modules', '.git', 'src/client'],
+                      include: ['@types', 'src/server', 'src/shared', 'src/client/ssr.tsx'],
+                  }
+                : undefined,
         },
         optimizeDeps: {
             include: ['react/jsx-runtime'],
@@ -55,9 +52,10 @@ export default defineConfig(({ mode }): UserConfig => {
             }),
             tsconfigPaths(),
             react(),
-            dev && run({
-                execArgv: ['--inspect=0.0.0.0:9229', '--max-old-space-size=4096'],
-            }),
+            dev &&
+                run({
+                    execArgv: ['--inspect=0.0.0.0:9229', '--max-old-space-size=4096'],
+                }),
         ],
     };
 });

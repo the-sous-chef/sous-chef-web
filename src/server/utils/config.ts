@@ -18,21 +18,24 @@ mock.onAnyCommand().resolves({
     NextPollConfigurationToken: 'fake',
     NextPollIntervalInSeconds: Infinity,
     ContentType: 'string',
-    Configuration: Uint8Array.from(JSON.stringify({
-        abortDelay: 10000,
-        backlog: 999,
-        defaultLocale: 'en-US',
-        hostname: '0.0.0.0',
-        port: 80,
-        proxy: false,
-        publicPath: 'public',
-    } as App.ServerConfig).split('').map((x) => x.charCodeAt(0))),
+    Configuration: Uint8Array.from(
+        JSON.stringify({
+            abortDelay: 10000,
+            backlog: 999,
+            defaultLocale: 'en-US',
+            hostname: '0.0.0.0',
+            port: 80,
+            proxy: false,
+            publicPath: 'public',
+        } as App.ServerConfig)
+            .split('')
+            .map((x) => x.charCodeAt(0)),
+    ),
     $metadata: {},
 });
 
-const toString = (arr: Uint8Array): string => (
-    arr instanceof Uint8Array ? new TextDecoder().decode(arr) : arr as string
-);
+const toString = (arr: Uint8Array): string =>
+    arr instanceof Uint8Array ? new TextDecoder().decode(arr) : (arr as string);
 
 const getClientConfigToken = async (): Promise<string> => {
     const getSession = new StartConfigurationSessionCommand({

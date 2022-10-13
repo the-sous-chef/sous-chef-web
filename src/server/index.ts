@@ -79,12 +79,7 @@ try {
     app.on('error', handleError);
     app.context.config = await getServerConfig();
 
-    const {
-        backlog,
-        hostname,
-        port,
-        proxy,
-    } = app.context.config;
+    const { backlog, hostname, port, proxy } = app.context.config;
 
     app.proxy = !!proxy;
 
@@ -99,17 +94,12 @@ try {
     app.use(router.allowedMethods());
     app.use(setCacheHeader(app.context.config.caching?.maxAge));
 
-    app.server = app.listen(
-        port,
-        hostname,
-        backlog,
-        () => {
-            if (process.send) {
-                process.send('ready');
-            }
-            LOGGER.info(`Server listening at ${hostname}:${port}...`);
-        },
-    );
+    app.server = app.listen(port, hostname, backlog, () => {
+        if (process.send) {
+            process.send('ready');
+        }
+        LOGGER.info(`Server listening at ${hostname}:${port}...`);
+    });
 } catch (e) {
     LOGGER.error(e);
     Sentry.captureException(e);

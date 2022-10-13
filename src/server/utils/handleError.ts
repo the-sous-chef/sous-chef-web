@@ -21,24 +21,30 @@ export const handleError = (e: Error, ctx: ParameterizedContext | undefined): vo
             runSentryErrorProcessing(ctx, scope);
             const ev = scope.addEventProcessor((event) => Sentry.addRequestDataToEvent(event, ctx.request));
 
-            logger.error({
-                guid,
-                request,
-                status,
-                locale: ctx.state.locale,
-                url: ctx.request.url,
-                ...(e as Error),
-                ...ev,
-            }, (e as Error).message);
+            logger.error(
+                {
+                    guid,
+                    request,
+                    status,
+                    locale: ctx.state.locale,
+                    url: ctx.request.url,
+                    ...(e as Error),
+                    ...ev,
+                },
+                (e as Error).message,
+            );
         });
 
         ctx.response.set('Cache-Control', 'public, max-age=0');
         ctx.response.set('Guid', guid);
         ctx.body = '';
     } else {
-        getLogger().error({
-            guid,
-            ...(e as Error),
-        }, (e as Error).message);
+        getLogger().error(
+            {
+                guid,
+                ...(e as Error),
+            },
+            (e as Error).message,
+        );
     }
 };

@@ -17,10 +17,7 @@ export function isAutoSessionTrackingEnabled(client: Sentry.NodeClient | undefin
 /**
  *
  */
-export const runSentryErrorProcessing = (
-    ctx: ParameterizedContext,
-    scope: Sentry.Scope,
-) => {
+export const runSentryErrorProcessing = (ctx: ParameterizedContext, scope: Sentry.Scope) => {
     // For some reason we need to set the transaction on the scope again
     const { transaction } = ctx.state;
 

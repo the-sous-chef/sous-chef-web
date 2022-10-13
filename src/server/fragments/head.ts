@@ -16,14 +16,12 @@ const generateCssScripts = (
     port: number | undefined,
     publicPath: string,
     manifest: Manifest,
-): string => extractCssAssets(manifest)
-    .flatMap((entry) => generateCssScript(entry.file, development, hostname, port, publicPath))
-    .join('');
+): string =>
+    extractCssAssets(manifest)
+        .flatMap((entry) => generateCssScript(entry.file, development, hostname, port, publicPath))
+        .join('');
 
-const generateReactRefreshSnippet = (
-    hostname: string | undefined,
-    port: number | undefined,
-): string => `\
+const generateReactRefreshSnippet = (hostname: string | undefined, port: number | undefined): string => `\
     <script async type="module">
         import RefreshRuntime from 'http://${hostname}:${port}/@react-refresh'
         RefreshRuntime.injectIntoGlobalHook(window)
@@ -46,7 +44,9 @@ export const head = (config: App.RenderContext, i18n: i18next): string => {
     return `\
         <head>
             <meta charset="UTF-8" />
-            <link rel="icon" type="image/svg+xml" href="${development ? `http://${hostname}:${port}` : ''}/${publicPath}img/favicon.svg" />
+            <link rel="icon" type="image/svg+xml" href="${
+                development ? `http://${hostname}:${port}` : ''
+            }/${publicPath}img/favicon.svg" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>${i18n.t('title')}</title>
             ${generateCssScripts(development, hostname, port, publicPath, manifest)}

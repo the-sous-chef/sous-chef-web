@@ -21,13 +21,14 @@ const generateJsScripts = (
     port: number | undefined,
     publicPath: string,
     manifest: Manifest,
-): string => extractJsAssets(manifest)
-    .map((entry) => generateJsScript(entry, development, hostname, port, publicPath))
-    .join('');
+): string =>
+    extractJsAssets(manifest)
+        .map((entry) => generateJsScript(entry, development, hostname, port, publicPath))
+        .join('');
 
-export const bodyStart = (): string => ('<body><div id="root">');
+export const bodyStart = (): string => '<body><div id="root">';
 
-export const bodyEnd = (): string => ('</body>');
+export const bodyEnd = (): string => '</body>';
 
 export const body = (config: App.RenderContext): string => {
     const {
@@ -39,10 +40,10 @@ export const body = (config: App.RenderContext): string => {
     // TODO consolidate
     const publicPath = config.publicPath ? `${config.publicPath}/` : '';
 
-    return (`\
+    return `\
             </div>
             <script>window.__REACT_QUERY_STATE__ = ${JSON.stringify(dehydratedState)};</script>
             ${generateJsScripts(development, hostname, port, publicPath, manifest)}
         </body>
-    `);
+    `;
 };

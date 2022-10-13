@@ -32,7 +32,11 @@ const determineLocale = (localeHeader: string | string[] | undefined, ctx: Param
             }
         }
 
-        throw new Error(`Unsupported languages requested: "${localeHeader.join(', ')}". Please check your browser settings and try again.`);
+        throw new Error(
+            `Unsupported languages requested: "${localeHeader.join(
+                ', ',
+            )}". Please check your browser settings and try again.`,
+        );
     }
 
     // Check explicit length and for dash as this is faster than regex matching
@@ -42,7 +46,9 @@ const determineLocale = (localeHeader: string | string[] | undefined, ctx: Param
         return l;
     }
 
-    throw new Error(`Unsupported language requested: "${localeHeader}". Please check your browser settings and try again.`);
+    throw new Error(
+        `Unsupported language requested: "${localeHeader}". Please check your browser settings and try again.`,
+    );
 };
 
 export const locale = async (ctx: ParameterizedContext, next: Next): Promise<void> => {

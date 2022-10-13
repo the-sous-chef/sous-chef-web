@@ -17,15 +17,15 @@ type UseQuery = typeof useQuery;
  * tests that timeout.
  */
 vi.mock('react-query', async () => {
-    const actual = await vi.importActual('react-query') as Record<string, unknown> & {
+    const actual = (await vi.importActual('react-query')) as Record<string, unknown> & {
         default: Record<string, unknown> & {
             useQuery: UseQuery;
         };
     };
 
     // @ts-expect-error mocking with default, expect typing errors
-    const useQueryNoRetry: UseQuery = (queryKey, queryFn, options) => actual.default
-        .useQuery(queryKey, queryFn, {
+    const useQueryNoRetry: UseQuery = (queryKey, queryFn, options) =>
+        actual.default.useQuery(queryKey, queryFn, {
             ...options,
             // overrides the retry value for useQuery calls so retries are set to false
             retry: false,

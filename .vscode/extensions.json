@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "amazonwebservices.aws-toolkit-vscode",
+        "donjayamanne.githistory",
+        "eamodio.gitlens",
+        "eg2.vscode-npm-script",
+        "esbenp.prettier-vscode",
+        "GitHub.vscode-pull-request-github",
+        "mark-tucker.aws-cli-configure",
+        "mhutchie.git-graph",
+        "ms-azuretools.vscode-docker",
+        "msjsdiag.vscode-react-native",
+        "redhat.vscode-yaml",
+        "streetsidesoftware.code-spell-checker",
+        "yzhang.markdown-all-in-one"
+    ]
+}

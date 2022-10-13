@@ -21,8 +21,6 @@ export default defineConfig({
         globals: true,
         outputFile: { junit: 'junit.xml' },
         reporters: ['default', 'junit'],
-        setupFiles: [
-            './vitest/vitest.setup.ts',
-        ],
+        setupFiles: ['./vitest/vitest.setup.ts'],
     },
 });

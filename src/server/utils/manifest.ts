@@ -1,15 +1,9 @@
 import type { Manifest, ManifestChunk } from 'vite';
 
-export const findEntryManifestChunk = (
-    manifest: Manifest,
-): ManifestChunk | undefined => Object
-    .values(manifest)
-    .find((entry) => entry.isEntry);
+export const findEntryManifestChunk = (manifest: Manifest): ManifestChunk | undefined =>
+    Object.values(manifest).find((entry) => entry.isEntry);
 
-export const getJsManifestChunkTree = (
-    entry: ManifestChunk,
-    manifest: Manifest,
-): ManifestChunk[] => {
+export const getJsManifestChunkTree = (entry: ManifestChunk, manifest: Manifest): ManifestChunk[] => {
     let chunks: ManifestChunk[] = [entry];
 
     if (entry.imports) {

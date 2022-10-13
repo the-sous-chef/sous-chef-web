@@ -22,9 +22,10 @@ export const render = (
         <SSR dehydratedState={context.dehydratedState} queryClient={queryClient} />,
         {
             bootstrapModules: [
-                `${context.development
-                    ? `http://${context.devServer.hostname}:${context.devServer.port}/src/client`
-                    : '/public'
+                `${
+                    context.development
+                        ? `http://${context.devServer.hostname}:${context.devServer.port}/src/client`
+                        : '/public'
                 }/browser.tsx`,
             ],
             onAllReady() {

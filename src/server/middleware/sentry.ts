@@ -3,7 +3,11 @@
 import * as Sentry from '@sentry/node';
 import { extractTraceparentData } from '@sentry/tracing';
 import { Next, ParameterizedContext } from 'koa';
-import utils, { baggageHeaderToDynamicSamplingContext, extractPathForTransaction, extractRequestData } from '@sentry/utils';
+import utils, {
+    baggageHeaderToDynamicSamplingContext,
+    extractPathForTransaction,
+    extractRequestData,
+} from '@sentry/utils';
 import { isAutoSessionTrackingEnabled } from '../utils/sentry';
 
 const { addRequestDataToEvent, logger } = utils;
@@ -12,9 +16,7 @@ export type RequestHandlerOptions = Sentry.AddRequestDataToEventOptions & {
     flushTimeout?: number;
 };
 
-export const sentry = (
-    options?: RequestHandlerOptions,
-) => {
+export const sentry = (options?: RequestHandlerOptions) => {
     const currentHub = Sentry.getCurrentHub();
     const client = currentHub.getClient<Sentry.NodeClient>();
 
@@ -33,7 +35,7 @@ export const sentry = (
 
     return async (ctx: ParameterizedContext, next: Next): Promise<void> => {
         const reqMethod = (ctx.method || '').toUpperCase();
-        const traceparentData = (ctx.request.get('sentry-trace'))
+        const traceparentData = ctx.request.get('sentry-trace')
             ? extractTraceparentData(ctx.request.get('sentry-trace'))
             : null;
         const eventProcessor = (event: Sentry.Event) => addRequestDataToEvent(event, ctx.req, options);
@@ -44,11 +46,7 @@ export const sentry = (
         if (options?.flushTimeout) {
             // eslint-disable-next-line @typescript-eslint/unbound-method
             const _end = ctx.res.end;
-            const flushAtEnd = (
-                chunk: any,
-                encoding: BufferEncoding,
-                cb?: (() => void) | undefined,
-            ) => {
+            const flushAtEnd = (chunk: any, encoding: BufferEncoding, cb?: (() => void) | undefined) => {
                 Sentry.flush(options.flushTimeout)
                     .then(() => {
                         _end.call(this, chunk, encoding, cb);
@@ -66,18 +64,21 @@ export const sentry = (
             ctx.res.end = flushAtEnd;
         }
 
-        ctx.state.transaction = Sentry.startTransaction({
-            name,
-            op: 'http.server',
-            ...traceparentData,
-            metadata: {
-                dynamicSamplingContext: traceparentData && !dynamicSamplingContext ? {} : dynamicSamplingContext,
-                source,
+        ctx.state.transaction = Sentry.startTransaction(
+            {
+                name,
+                op: 'http.server',
+                ...traceparentData,
+                metadata: {
+                    dynamicSamplingContext: traceparentData && !dynamicSamplingContext ? {} : dynamicSamplingContext,
+                    source,
+                },
             },
-        }, {
-            // extra context passed to the tracesSampler
-            request: extractRequestData(ctx.req),
-        });
+            {
+                // extra context passed to the tracesSampler
+                request: extractRequestData(ctx.req),
+            },
+        );
 
         currentHub.configureScope((scope) => {
             scope.setSpan(ctx.state.transaction);

@@ -1,7 +1,5 @@
 import { RecoilRoot } from 'recoil';
-import {
-    DehydratedState, Hydrate, QueryClient, QueryClientProvider,
-} from '@tanstack/react-query';
+import { DehydratedState, Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { App } from 'src/client/App';
 
 export type PropTypes = {

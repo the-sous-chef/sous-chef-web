@@ -61,9 +61,11 @@ export default defineConfig(({ mode }): UserConfig => {
                 host: process.env.HOSTNAME,
                 protocol: 'ws',
             },
-            watch: dev ? {
-                usePolling: isWin,
-            } : undefined,
+            watch: dev
+                ? {
+                      usePolling: isWin,
+                  }
+                : undefined,
         },
     };
 });

@@ -6,7 +6,7 @@ declare namespace App {
         backlog: number;
         caching?: {
             maxAge: number;
-        },
+        };
         hostname: string;
         port: number;
         proxy?: boolean;
@@ -34,7 +34,7 @@ declare namespace App {
 
     export type ServiceConfig = import('ky').Options & {
         prefixUrl: string;
-    }
+    };
 
     export type Logger = import('pino').Logger;
 
@@ -51,12 +51,14 @@ declare namespace App {
 
     export type ServerContext = import('koa').DefaultContext & {
         config: ServerConfig;
-    }
+    };
 
     export type ServerState = import('koa').DefaultState & {
         locale: string;
         transaction: ReturnType<import('@sentry/node').Hub['startTransaction']>;
     };
 
-    export type Server = import('ky').Koa<App.ServerState, App.ServerContext> & { server: ReturnType<import('ky').Koa['listen']> }
+    export type Server = import('ky').Koa<App.ServerState, App.ServerContext> & {
+        server: ReturnType<import('ky').Koa['listen']>;
+    };
 }

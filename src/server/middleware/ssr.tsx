@@ -25,9 +25,9 @@ const manifest = loadViteManifest();
 export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> => {
     const span = ctx.state.transaction
         ? ctx.state.transaction.startChild({
-            description: ctx.route,
-            op: 'ssr',
-        })
+              description: ctx.route,
+              op: 'ssr',
+          })
         : null;
 
     const queryClient = new QueryClient();
