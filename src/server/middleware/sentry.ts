@@ -3,12 +3,13 @@
 import * as Sentry from '@sentry/node';
 import { extractTraceparentData } from '@sentry/tracing';
 import { Next, ParameterizedContext } from 'koa';
+// eslint-disable-next-line import/default
 import utils, {
     baggageHeaderToDynamicSamplingContext,
     extractPathForTransaction,
     extractRequestData,
 } from '@sentry/utils';
-import { isAutoSessionTrackingEnabled } from '../utils/sentry';
+import { isAutoSessionTrackingEnabled } from 'src/server/utils/sentry';
 
 const { addRequestDataToEvent, logger } = utils;
 

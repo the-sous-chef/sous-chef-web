@@ -32,7 +32,7 @@ try {
         dsn: process.env.SENTRY_DSN,
         environment: process.env.DEPLOYMENT,
         integrations: [
-            new Sentry.Integrations.Http({ tracing: true }),
+            new Sentry.Integrations.Http({ breadcrumbs: true, tracing: true }),
             new CaptureConsole(),
             process.env.NODE_ENV === 'development' ? new Debug() : null,
         ].filter(Boolean) as Sentry.NodeOptions['integrations'],
@@ -49,6 +49,7 @@ try {
 }
 
 const stop = (): void => {
+    LOGGER.flush();
     Sentry.close(2000).then(() => {
         if (app?.server) {
             app.server.close();
@@ -87,7 +88,7 @@ try {
     app.use(sentry());
     app.use(locale);
     app.use(helmet({ contentSecurityPolicy: false }));
-    app.use(logger());
+    app.use(logger(LOGGER));
     app.use(compress(app.context.config.compress));
     app.use(cors({ origin: '*' }));
     app.use(router.routes());

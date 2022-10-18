@@ -18,8 +18,6 @@ export const error = async (ctx: ParameterizedContext, next: Next): Promise<void
             throw new ServerError('Not Found', { url: ctx.req.url || '', status: 404 });
         }
     } catch (e) {
-        // eslint-disable-next-line no-debugger
-        debugger;
-        handleError(e as Error, ctx);
+        await handleError(e as Error, ctx);
     }
 };

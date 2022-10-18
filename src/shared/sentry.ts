@@ -6,7 +6,7 @@ export const beforeSend = (event: Event, hint: EventHint) => {
         return null;
     }
 
-    if (process.env.NODE_ENV === 'development' && process.env.DEBUG_BUILD !== 'true') {
+    if (process.env.NODE_ENV === 'development' || process.env.DEBUG_BUILD) {
         const log = normalizeSentryToConsoleMethod(event.level || 'debug');
 
         // eslint-disable-next-line no-console

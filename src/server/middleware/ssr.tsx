@@ -7,7 +7,9 @@ import { render } from 'src/server/utils/renderNodeStream';
 import { body } from 'src/server/fragments/body';
 import { head } from 'src/server/fragments/head';
 import i18next from 'i18next';
+import { SSR } from 'src/client/ssr';
 import type { Manifest } from 'vite';
+import { Span } from '@sentry/tracing';
 
 function loadViteManifest(): Manifest {
     try {
@@ -24,10 +26,10 @@ const manifest = loadViteManifest();
 
 export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> => {
     const span = ctx.state.transaction
-        ? ctx.state.transaction.startChild({
+        ? (ctx.state.transaction.startChild({
               description: ctx.route,
               op: 'ssr',
-          })
+          }) as Span)
         : null;
 
     const queryClient = new QueryClient();
@@ -56,12 +58,14 @@ export const ssr = async (ctx: ParameterizedContext, next: Next): Promise<void> 
     ctx.type = 'text/html';
 
     const stream = render(
-        ctx,
-        context,
-        i18next.language,
-        queryClient,
-        () => body(context),
-        () => head(context, i18next),
+        <SSR dehydratedState={context.dehydratedState} location={ctx.url} queryClient={queryClient} />,
+        {
+            ctx,
+            context,
+            language: i18next.language,
+            body: () => body(context),
+            head: () => head(context, i18next),
+        },
     );
     const waiter = new Promise<void>((resolve, reject) => {
         stream.on('error', (e) => {

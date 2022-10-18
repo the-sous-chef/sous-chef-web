@@ -34,8 +34,9 @@ mock.onAnyCommand().resolves({
     $metadata: {},
 });
 
-const toString = (arr: Uint8Array): string =>
-    arr instanceof Uint8Array ? new TextDecoder().decode(arr) : (arr as string);
+const toString = (arr: Uint8Array): string => {
+    return arr instanceof Uint8Array ? new TextDecoder().decode(arr) : (arr as string);
+};
 
 const getClientConfigToken = async (): Promise<string> => {
     const getSession = new StartConfigurationSessionCommand({

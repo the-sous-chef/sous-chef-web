@@ -50,7 +50,6 @@ ONBUILD COPY .                  ${APP_DIR}/
 FROM base as production
 
 ONBUILD RUN npm ci --force --ignore-scripts
-
 ONBUILD COPY ./dist             ${APP_DIR}/dist
 
 FROM ${NODE_ENV}
