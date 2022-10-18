@@ -1,4 +1,3 @@
-import { RecoilRoot } from 'recoil';
 import { DehydratedState, Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { StaticRouter } from 'react-router-dom/server';
 import { routes } from 'src/client/routes';
@@ -16,11 +15,9 @@ export function SSR(props: PropTypes): JSX.Element {
     return (
         <QueryClientProvider client={queryClient}>
             <Hydrate state={dehydratedState}>
-                <RecoilRoot>
-                    <StaticRouter location={location}>
-                        <Routes>{routes}</Routes>
-                    </StaticRouter>
-                </RecoilRoot>
+                <StaticRouter location={location}>
+                    <Routes>{routes}</Routes>
+                </StaticRouter>
             </Hydrate>
         </QueryClientProvider>
     );

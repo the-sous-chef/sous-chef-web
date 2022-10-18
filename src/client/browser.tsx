@@ -3,14 +3,12 @@
 import 'vite/modulepreload-polyfill';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { hydrateRoot } from 'react-dom/client';
-import { RecoilRoot } from 'recoil';
 import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as Sentry from '@sentry/react';
 import { BrowserTracing } from '@sentry/tracing';
 import { beforeSend } from 'src/shared/sentry';
 import LogRocket from 'logrocket';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
-import { Auth0Provider } from '@auth0/auth0-react';
 import { routes } from 'src/client/routes';
 
 const queryClient = new QueryClient();
@@ -34,19 +32,10 @@ const router = createBrowserRouter(createRoutesFromElements(routes));
 
 hydrateRoot(
     document.getElementById('root') as Element,
-    <Auth0Provider
-        clientId={process.env.AUTH0_CLIENT_ID as string}
-        domain={process.env.AUTH0_DOMAIN as string}
-        redirectUri={window.location.origin}
-        useRefreshTokens={true}
-    >
-        <QueryClientProvider client={queryClient}>
-            <Hydrate state={dehydratedState}>
-                <RecoilRoot>
-                    <RouterProvider router={router} />
-                </RecoilRoot>
-            </Hydrate>
-            <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-    </Auth0Provider>,
+    <QueryClientProvider client={queryClient}>
+        <Hydrate state={dehydratedState}>
+            <RouterProvider router={router} />
+        </Hydrate>
+        <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>,
 );

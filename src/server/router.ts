@@ -7,4 +7,4 @@ export const router = new Router();
 
 router.get('/livecheck', livecheck);
 router.get('/robots.txt', robots);
-router.get('/:path', ssr);
+router.get('/(.*)', ssr);

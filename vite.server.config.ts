@@ -42,6 +42,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 delimiters: ['', ''],
                 preventAssignment: false,
                 values: {
+                    __SENTRY_DEBUG__: JSON.stringify(process.env.DEBUG_BUILD),
                     'process.env.AUTH0_DOMAIN': JSON.stringify(process.env.AUTH0_DOMAIN),
                     'process.env.AUTH0_CLIENT_ID': JSON.stringify(process.env.AUTH0_CLIENT_ID),
                     'process.env.DEBUG_BUILD': JSON.stringify(process.env.DEBUG_BUILD),
