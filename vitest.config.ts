@@ -10,7 +10,7 @@ export default defineConfig({
     test: {
         clearMocks: true,
         coverage: {
-            reporter: ['cobertura'],
+            reporter: ['text', 'text-summary', 'cobertura'],
         },
         environment: 'jsdom',
         environmentOptions: {
@@ -21,6 +21,6 @@ export default defineConfig({
         globals: true,
         outputFile: { junit: 'junit.xml' },
         reporters: ['default', 'junit'],
-        setupFiles: ['./vitest/vitest.setup.ts'],
+        setupFiles: ['./vitest/setup.ts'],
     },
 });

@@ -1,19 +1,6 @@
-import type { SeverityLevel } from '@sentry/types';
 // eslint-disable-next-line import/no-named-as-default
 import pino from 'pino';
-
-type ConsoleMethods = 'debug' | 'info' | 'warn' | 'error' | 'trace' | 'log';
-
-export const normalizeSentryToConsoleMethod = (level: SeverityLevel): ConsoleMethods => {
-    switch (level) {
-        case 'fatal':
-            return 'error';
-        case 'warning':
-            return 'warn';
-        default:
-            return level;
-    }
-};
+import { browser } from '@blacklab/pino-sentry-transport';
 
 function serverLogger() {
     const pipeline: pino.TransportSingleOptions<Record<string, unknown>>[] = [
@@ -37,7 +24,7 @@ function serverLogger() {
 
 function browserLogger() {
     return pino({
-        browser: {},
+        browser: browser(),
     });
 }
 

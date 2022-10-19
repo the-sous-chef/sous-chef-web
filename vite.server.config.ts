@@ -15,10 +15,10 @@ export default defineConfig(({ mode }): UserConfig => {
         build: {
             outDir: 'dist/server',
             rollupOptions: {
-                external: ['newrelic.cjs', /node_modules/],
+                external: ['newrelic.cjs', './node_modules/*'],
                 input: 'src/server/index.ts',
                 output: {
-                    format: 'es',
+                    format: 'esm',
                 },
             },
             sourcemap: true,
@@ -36,6 +36,11 @@ export default defineConfig(({ mode }): UserConfig => {
         },
         optimizeDeps: {
             include: ['react/jsx-runtime'],
+            esbuildOptions: {
+                format: 'esm',
+                target: 'es2020',
+                treeShaking: true,
+            },
         },
         plugins: [
             replace({

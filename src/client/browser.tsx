@@ -25,6 +25,12 @@ Sentry.init({
     tracesSampleRate: 1.0,
 });
 
+LogRocket.getSessionURL((sessionURL) => {
+    Sentry.configureScope((scope) => {
+        scope.setExtra('sessionURL', sessionURL);
+    });
+});
+
 // TODO identify users
 LogRocket.init(process.env.LOGROCKET_ACCOUNT_ID as string);
 

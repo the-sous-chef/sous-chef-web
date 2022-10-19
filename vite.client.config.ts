@@ -28,6 +28,7 @@ export default defineConfig(({ mode }): UserConfig => {
         },
         optimizeDeps: {
             esbuildOptions: {
+                format: 'esm',
                 target: 'es2020',
                 treeShaking: true,
             },
