@@ -1,10 +1,4 @@
-import {
-    aws_appconfig as appconfig,
-    CfnOutput,
-    RemovalPolicy,
-    Stack,
-    StackProps,
-} from 'aws-cdk-lib';
+import { aws_appconfig as appconfig, CfnOutput, RemovalPolicy, Stack, StackProps } from 'aws-cdk-lib';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
@@ -27,10 +21,7 @@ export class AppConfigStack extends Stack {
         const configurationBucketReadPolicyDocument = new iam.PolicyDocument({
             statements: [
                 new iam.PolicyStatement({
-                    actions: [
-                        's3:GetObject',
-                        's3:GetObjectVersion',
-                    ],
+                    actions: ['s3:GetObject', 's3:GetObjectVersion'],
                     effect: iam.Effect.ALLOW,
                     // principals: [new iam.ServicePrincipal('appconfig.amazonaws.com')],
                     resources: [`${configurationBucket.bucketArn}/*`],
@@ -47,9 +38,7 @@ export class AppConfigStack extends Stack {
                     resources: [configurationBucket.bucketArn],
                 }),
                 new iam.PolicyStatement({
-                    actions: [
-                        's3:ListAllMyBuckets',
-                    ],
+                    actions: ['s3:ListAllMyBuckets'],
                     effect: iam.Effect.ALLOW,
                     resources: ['*'],
                 }),
@@ -90,21 +79,29 @@ export class AppConfigStack extends Stack {
         });
 
         // Configuration Profiles
-        const developmentConfigurationProfile = new appconfig.CfnConfigurationProfile(this, `${id}DevelopmentConfigurationProfile`, {
-            applicationId: application.ref,
-            locationUri: `${configurationBucket.s3UrlForObject('development/config.json')}`,
-            name: `${appConfigName}-development-configuration-profile`,
-            retrievalRoleArn: role.roleArn,
-            // TODO validator
-        });
+        const developmentConfigurationProfile = new appconfig.CfnConfigurationProfile(
+            this,
+            `${id}DevelopmentConfigurationProfile`,
+            {
+                applicationId: application.ref,
+                locationUri: `${configurationBucket.s3UrlForObject('development/config.json')}`,
+                name: `${appConfigName}-development-configuration-profile`,
+                retrievalRoleArn: role.roleArn,
+                // TODO validator
+            },
+        );
 
-        const productionConfigurationProfile = new appconfig.CfnConfigurationProfile(this, `${id}ProductionConfigurationProfile`, {
-            applicationId: application.ref,
-            locationUri: `${configurationBucket.s3UrlForObject('production/config.json')}`,
-            name: `${appConfigName}-production-configuration-profile`,
-            retrievalRoleArn: role.roleArn,
-            // TODO validator
-        });
+        const productionConfigurationProfile = new appconfig.CfnConfigurationProfile(
+            this,
+            `${id}ProductionConfigurationProfile`,
+            {
+                applicationId: application.ref,
+                locationUri: `${configurationBucket.s3UrlForObject('production/config.json')}`,
+                name: `${appConfigName}-production-configuration-profile`,
+                retrievalRoleArn: role.roleArn,
+                // TODO validator
+            },
+        );
 
         const qaConfigurationProfile = new appconfig.CfnConfigurationProfile(this, `${id}QaConfigurationProfile`, {
             applicationId: application.ref,

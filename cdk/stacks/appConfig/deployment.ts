@@ -1,9 +1,4 @@
-import {
-    aws_appconfig as appconfig,
-    Fn,
-    Stack,
-    StackProps as CdkStackProps,
-} from 'aws-cdk-lib';
+import { aws_appconfig as appconfig, Fn, Stack, StackProps as CdkStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { capitalize } from 'utils/capitalize';
 
@@ -16,10 +11,7 @@ export class AppConfigDeploymentStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const {
-            configurationVersion,
-            stage,
-        } = props;
+        const { configurationVersion, stage } = props;
 
         // eslint-disable-next-line no-new
         new appconfig.CfnDeployment(this, `${id}AppConfig${capitalize(stage)}Deployment`, {

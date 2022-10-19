@@ -3,9 +3,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as s3 from 'aws-cdk-lib/aws-s3';
-import {
-    CfnOutput, Stack, StackProps as CdkStackProps,
-} from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps as CdkStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export interface StackProps extends CdkStackProps {
@@ -18,10 +16,7 @@ export class EcsClusterStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const {
-            root,
-            vpcId,
-        } = props;
+        const { root, vpcId } = props;
 
         const vpc = ec2.Vpc.fromLookup(this, 'VPC', {
             vpcId,

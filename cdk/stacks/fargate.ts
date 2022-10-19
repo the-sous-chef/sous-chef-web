@@ -6,16 +6,14 @@ import * as ecr from 'aws-cdk-lib/aws-ecr';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import * as logs from 'aws-cdk-lib/aws-logs';
 import * as route53 from 'aws-cdk-lib/aws-route53';
-import {
-    CfnOutput, Stack, StackProps as CdkStackProps,
-} from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps as CdkStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export interface StackProps extends CdkStackProps {
-    certificateArn: string,
-    clusterArn: string,
-    domainName: string,
-    hostedZoneId: string,
+    certificateArn: string;
+    clusterArn: string;
+    domainName: string;
+    hostedZoneId: string;
     root: string;
     repositoryArn: string;
     stage: string;
@@ -27,17 +25,8 @@ export class FargateStack extends Stack {
     constructor(scope: Construct, id: string, props: StackProps) {
         super(scope, id, props);
 
-        const {
-            certificateArn,
-            clusterArn,
-            domainName,
-            hostedZoneId,
-            root,
-            repositoryArn,
-            stage,
-            vpcId,
-            zoneName,
-        } = props;
+        const { certificateArn, clusterArn, domainName, hostedZoneId, root, repositoryArn, stage, vpcId, zoneName } =
+            props;
 
         const vpc = ec2.Vpc.fromLookup(this, `${id}VPC`, {
             vpcId,

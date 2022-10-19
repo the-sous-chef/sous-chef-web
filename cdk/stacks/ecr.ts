@@ -1,7 +1,5 @@
 import * as ecr from 'aws-cdk-lib/aws-ecr';
-import {
-    CfnOutput, Stack, StackProps as CdkStackProps,
-} from 'aws-cdk-lib';
+import { CfnOutput, Stack, StackProps as CdkStackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 
 export interface StackProps extends CdkStackProps {
