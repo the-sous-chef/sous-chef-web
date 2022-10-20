@@ -27,7 +27,7 @@ export class FargateStack extends Stack {
 
         const { certificateArn, clusterArn, domainName, hostedZoneId, root, repositoryArn, stage, vpcId, zoneName } =
             props;
-
+        const release = this.node.tryGetContext('release') || process.env.RELEASE;
         const vpc = ec2.Vpc.fromLookup(this, `${id}VPC`, {
             vpcId,
             subnetGroupNameTag: 'aws-cdk:subnet-name',
@@ -83,8 +83,9 @@ export class FargateStack extends Stack {
                 environment: {
                     DEPLOYMENT: this.node.tryGetContext('deployment') || process.env.DEPLOYMENT,
                     NODE_ENV: stage,
+                    RELEASE: release,
                 },
-                image: ecs.ContainerImage.fromEcrRepository(repository, 'latest'),
+                image: ecs.ContainerImage.fromEcrRepository(repository, release),
                 logDriver: ecs.LogDrivers.awsLogs({
                     streamPrefix: serviceName,
                     logRetention: logs.RetentionDays.THREE_MONTHS,
