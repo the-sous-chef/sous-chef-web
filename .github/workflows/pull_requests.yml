@@ -21,26 +21,39 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       
-      - uses: actions/cache@v3
-        id: cache-node-modules
+      - name: Cache web app dependencies
+        uses: actions/cache@v3
+        id: web-app-cache-node-modules
         env:
-          cache-name: cache-node-modules
+          cache-name: web-app-cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            ~/.npm
-            node_modules
-            cdk/node_modules
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - name: Cache cdk dependencies
+        uses: actions/cache@v3
+        id: cdk-cache-node-modules
+        env:
+          cache-name: cdk-cache-node-modules
+        with:
+          path: cdk/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./cdk/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
     
-      - if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
-        run: |
-          npm ci --ignore-scripts
-          cd cdk & npm ci --ignore-scripts
+      - name: Install web app dependencies
+        if: ${{ steps.web-app-cache-node-modules.outputs.cache-hit != 'true' }}
+        run: npm ci --ignore-scripts
+
+      - name: Install cdk dependencies
+        if: ${{ steps.web-app-cache-node-modules.outputs.cache-hit != 'true' }}
+        run: cd cdk && npm ci --ignore-scripts
 
   lint:
     name: "Run Linting"
@@ -58,23 +71,34 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - uses: actions/cache@v3
-        id: cache-node-modules
+      - name: Cache web app dependencies
+        uses: actions/cache@v3
+        id: web-app-cache-node-modules
         env:
-          cache-name: cache-node-modules
+          cache-name: web-app-cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            ~/.npm
-            node_modules
-            cdk/node_modules
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - run: npm run lint
+      - name: Cache cdk dependencies
+        uses: actions/cache@v3
+        id: cdk-cache-node-modules
+        env:
+          cache-name: cdk-cache-node-modules
+        with:
+          path: cdk/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./cdk/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Lint web app and cdk
+        run: npm run lint
 
   test:
     needs: [install]
@@ -90,23 +114,34 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: actions/cache@v3
-        id: cache-node-modules
+      - name: Cache web app dependencies
+        uses: actions/cache@v3
+        id: web-app-cache-node-modules
         env:
-          cache-name: cache-node-modules
+          cache-name: web-app-cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            ~/.npm
-            node_modules
-            cdk/node_modules
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
+
+      - name: Cache cdk dependencies
+        uses: actions/cache@v3
+        id: cdk-cache-node-modules
+        env:
+          cache-name: cdk-cache-node-modules
+        with:
+          path: cdk/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./cdk/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
     
-      - run: npm run test:coverage
+      - name: Run tests
+        run: npm run test:coverage
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
@@ -132,20 +167,31 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: actions/cache@v3
-        id: cache-node-modules
+      - name: Cache web app dependencies
+        uses: actions/cache@v3
+        id: web-app-cache-node-modules
         env:
-          cache-name: cache-node-modules
+          cache-name: web-app-cache-node-modules
         with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: |
-            ~/.npm
-            node_modules
-            cdk/node_modules
+          path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - run: npm run build
+      - name: Cache cdk dependencies
+        uses: actions/cache@v3
+        id: cdk-cache-node-modules
+        env:
+          cache-name: cdk-cache-node-modules
+        with:
+          path: cdk/node_modules
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('./cdk/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - name: Build web app distribution
+        run: npm run build
