@@ -146,12 +146,21 @@ jobs:
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
-          files: ./coverage/cobertura-coverage.xml
+          files: ${{github.workspace}}/coverage/cobertura-coverage.xml
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
     
-      - name: Publish Test Report
+      - name: Publish test report
         uses: mikepenz/action-junit-report@v3
         with:
           report_paths: ${{ github.workspace }}/junit.xml
+
+      # - name: Publish code quality report
+      #   uses: paambaati/codeclimate-action@v3.1.1
+      #   with:
+      #     coverageLocations: ${{github.workspace}}/coverage/cobertura-coverage.xml
+      #   env:
+      #     CC_TEST_REPORTER_ID: <code_climate_reporter_id>
 
   build:
     strategy:
