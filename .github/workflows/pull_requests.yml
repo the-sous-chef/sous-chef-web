@@ -30,6 +30,7 @@ jobs:
           path: |
             ~/.npm
             node_modules
+            cdk/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -37,7 +38,9 @@ jobs:
             ${{ runner.os }}-
     
       - if: ${{ steps.cache-node-modules.outputs.cache-hit != 'true' }}
-        run: npm ci --ignore-scripts
+        run: |
+          npm ci --ignore-scripts
+          cd cdk & npm ci --ignore-scripts
 
   lint:
     name: "Run Linting"
@@ -64,6 +67,7 @@ jobs:
           path: |
             ~/.npm
             node_modules
+            cdk/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -95,6 +99,7 @@ jobs:
           path: |
             ~/.npm
             node_modules
+            cdk/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
@@ -136,6 +141,7 @@ jobs:
           path: |
             ~/.npm
             node_modules
+            cdk/node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
