@@ -163,6 +163,8 @@ jobs:
       #     CC_TEST_REPORTER_ID: <code_climate_reporter_id>
 
   build:
+    env:
+      NODE_ENV: production
     strategy:
       matrix:
         node-version: [18.x]
