@@ -11,7 +11,7 @@ export const App = (): JSX.Element => (
             useRefreshTokens
             clientId={process.env.AUTH0_CLIENT_ID as string}
             domain={process.env.AUTH0_DOMAIN as string}
-            redirectUri={window.location.origin}
+            redirectUri={typeof window !== 'undefined' ? window.location.origin : ''}
         >
             <RecoilRoot>
                 <ErrorBoundary

@@ -1,9 +1,10 @@
 // eslint-disable-next-line import/no-named-as-default
 import pino from 'pino';
-import { browser } from '@blacklab/pino-sentry-transport';
+// @ts-expect-error need node16 module support in tsconfig, but that leads to other errors
+import { browser } from '@blacklab/pino-sentry-transport/browser';
 
 function serverLogger() {
-    const pipeline: pino.TransportSingleOptions<Record<string, unknown>>[] = [
+    const pipeline: pino.TransportSingleOptions[] = [
         {
             target: '@blacklab/pino-sentry-transport',
             options: {

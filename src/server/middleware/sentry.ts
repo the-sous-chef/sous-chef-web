@@ -10,6 +10,7 @@ import utils, {
     extractRequestData,
 } from '@sentry/utils';
 import { isAutoSessionTrackingEnabled } from 'src/server/utils/sentry';
+import type { NodeClient } from '@sentry/node';
 
 const { addRequestDataToEvent, logger } = utils;
 
@@ -19,7 +20,7 @@ export type RequestHandlerOptions = Sentry.AddRequestDataToEventOptions & {
 
 export const sentry = (options?: RequestHandlerOptions) => {
     const currentHub = Sentry.getCurrentHub();
-    const client = currentHub.getClient<Sentry.NodeClient>();
+    const client = currentHub.getClient<NodeClient>();
 
     // Initialise an instance of SessionFlusher on the client when `autoSessionTracking` is enabled and the
     // `requestHandler` middleware is used indicating that we are running in SessionAggregates mode
@@ -90,7 +91,7 @@ export const sentry = (options?: RequestHandlerOptions) => {
         });
 
         ctx.res.on('finish', () => {
-            const localClient = currentHub.getClient<Sentry.NodeClient>();
+            const localClient = currentHub.getClient<NodeClient>();
 
             // Push `transaction.finish` to the next event loop so open spans have a chance to
             // finish before the transaction closes

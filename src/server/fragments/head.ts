@@ -46,7 +46,7 @@ export const head = (config: App.RenderContext, i18n: i18next): string => {
             <meta charset="UTF-8" />
             <link rel="icon" type="image/svg+xml" href="${
                 development ? `http://${hostname}:${port}` : ''
-            }/${publicPath}img/favicon.svg" />
+            }/${publicPath}favicon.ico" />
             <meta name="viewport" content="width=device-width, initial-scale=1.0" />
             <title>${i18n.t('title')}</title>
             ${generateCssScripts(development, hostname, port, publicPath, manifest)}

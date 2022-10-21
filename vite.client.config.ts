@@ -24,7 +24,7 @@ export default defineConfig(({ mode }): UserConfig => {
                 input: 'src/client/browser.tsx',
             },
             sourcemap: true,
-            target: 'es2020',
+            target: 'modules',
         },
         optimizeDeps: {
             esbuildOptions: {

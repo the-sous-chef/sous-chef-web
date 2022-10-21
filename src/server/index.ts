@@ -33,7 +33,7 @@ try {
         environment: process.env.DEPLOYMENT,
         integrations: [
             new Sentry.Integrations.Http({ breadcrumbs: true, tracing: true }),
-            new CaptureConsole(),
+            process.env.NODE_ENV === 'production' ? new CaptureConsole() : null,
             process.env.NODE_ENV === 'development' ? new Debug() : null,
         ].filter(Boolean) as Sentry.NodeOptions['integrations'],
         release: process.env.RELEASE,

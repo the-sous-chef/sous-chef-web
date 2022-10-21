@@ -1,7 +1,8 @@
 import * as Sentry from '@sentry/node';
 import { ParameterizedContext } from 'koa';
+import type { NodeClient } from '@sentry/node';
 
-export function isAutoSessionTrackingEnabled(client: Sentry.NodeClient | undefined): boolean {
+export function isAutoSessionTrackingEnabled(client: NodeClient | undefined): boolean {
     if (client === undefined) {
         return false;
     }
@@ -25,7 +26,7 @@ export const runSentryErrorProcessing = (ctx: ParameterizedContext | undefined, 
         scope.setSpan(transaction);
     }
 
-    const client = Sentry.getCurrentHub().getClient<Sentry.NodeClient>();
+    const client = Sentry.getCurrentHub().getClient<NodeClient>();
 
     if (client && isAutoSessionTrackingEnabled(client)) {
         // Check if the `SessionFlusher` is instantiated on the client to go into this branch that marks the
