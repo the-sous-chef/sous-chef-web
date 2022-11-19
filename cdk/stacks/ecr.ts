@@ -13,7 +13,7 @@ export class EcrStack extends Stack {
 
         const { root } = props;
 
-        const repository = new ecr.Repository(this, `${id}Repository`, {
+        const repository = new ecr.Repository(this, `${id}ECRRepository`, {
             imageScanOnPush: true,
             repositoryName: `${root}-ecr`.toLowerCase(),
         });

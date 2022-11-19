@@ -10,6 +10,7 @@
         "aws-cdk": "2.41.0",
         "aws-cdk-lib": "2.41.0",
         "aws-cdk-local": "^2.15.0",
+        "cdk-ecr-deployment": "^2.5.6",
         "constructs": "^10.1.96",
         "source-map-support": "^0.5.21",
         "ts-node": "^10.9.1",
