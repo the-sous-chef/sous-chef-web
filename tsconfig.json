@@ -1,39 +1,36 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "include": [
+        "remix.env.d.ts",
+        "**/*.ts",
+        "**/*.tsx",
+        "remix.config.cjs", 
+        "server.ts"
+    ],
     "compilerOptions": {
-        "allowJs": false,
+        "allowJs": true,
+        "allowImportingTsExtensions": true,
         "baseUrl": ".",
-        "checkJs": false,
-        "downlevelIteration": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "forceConsistentCasingInFileNames": true,
-        "inlineSources": true,
         "isolatedModules": true,
         "jsx": "react-jsx",
-        "lib": [
-            "ESNext",
-            "DOM.Iterable",
-            "DOM"
-        ],
-        "module": "ESNext",
-        "moduleResolution": "Node",
+        "lib": ["DOM", "DOM.Iterable", "ES2021"],
+        "moduleResolution": "node16",
         "newLine": "lf",
+        // Remix takes care of building everything in `remix build`.
+        "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noUnusedLocals": true,
-        "outDir": "./dist",
+        "paths": {
+            "~/*": ["./app/*"]
+        },
         "preserveConstEnums": true,
         "resolveJsonModule": true,
-        "skipLibCheck": true,
-        "sourceMap": true,
-        "sourceRoot": "/",
         "strict": true,
-        "target": "ES2022",
+        "target": "ES2021",
         "useDefineForClassFields": true
-    },
-    "exclude": [
-        "cdk",
-        "node_modules",
-        "dist"
-    ]
+    }
 }

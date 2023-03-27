@@ -1,0 +1,27 @@
+name = "sous-chef-web-development"
+compatibility_date = "2023-03-25"
+compatibility_flags = [
+    "streams_enable_constructors",
+    "response_redirect_url_standard",
+    "nodejs_compat",
+]
+send_metrics = false
+
+[vars]
+APP_CONFIG_APP_IDENTIFIER = "the-sous-chef-web"
+APP_CONFIG_CLIENT_CONFIG_PROFILE_IDENTIFIER = "client"
+APP_CONFIG_SERVER_CONFIG_PROFILE_IDENTIFIER = "server"
+AUTH0_CALLBACK_URL = "http://localhost:8788/callback"
+AUTH0_DOMAIN = "thesouschef.us.auth0.com"
+AUTH0_LOGOUT_URL = "https://thesouschef.us.auth0.com/v2/logout"
+AUTH0_RETURN_TO_URL = "http://localhost:8788"
+AWS_REGION = "us-east-1"
+ENVIRONMENT = "development"
+DEBUG_BUILD = true
+
+[env.production]
+name = "sous-chef-web"
+
+[env.production.vars]
+DEBUG_BUILD = false
+ENVIRONMENT = "production"

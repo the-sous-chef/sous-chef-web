@@ -1,3 +1,4 @@
+/** @type {import('eslint').Linter.Config} */
 const path = require('path');
 
 module.exports = {
@@ -5,6 +6,9 @@ module.exports = {
     parserOptions: {
         tsconfigRootDir: __dirname,
         project: path.resolve(__dirname, 'tsconfig.json'),
+    },
+    rules: {
+        'import/extensions': 'never',
     },
     settings: {
         'import/resolver': {
