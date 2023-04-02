@@ -4,6 +4,9 @@ module.exports = {
     // assetsBuildDirectory: 'public/build',
     // publicPath: '/build/',
     devServerBroadcastDelay: 1000,
+    future: {
+        unstable_tailwind: true,
+    },
     ignoredRouteFiles: ['**/.*'],
     server: './server.ts',
     serverBuildPath: 'functions/[[path]].js',

@@ -16,12 +16,12 @@ export default function Home() {
     return (
         <>
             <Form action="/logout" method="post">
-                <button>Log Out</button>
+                <button className="px-4 py-2 font-semibold text-sm bg-blue-500 text-white rounded-full shadow-sm">Log Out</button>
             </Form>
 
             <hr />
 
-            <pre>
+            <pre className="font-sans text-base">
                 <code>{JSON.stringify(profile, null, 2)}</code>
             </pre>
         </>
