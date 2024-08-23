@@ -7,7 +7,7 @@
         "@auth0/auth0-react": "^1.12.0",
         "@aws-sdk/client-appconfigdata": "^3.190.0",
         "@blacklab/pino-sentry-transport": "^1.2.1",
-        "@koa/cors": "^4.0.0",
+        "@koa/cors": "^5.0.0",
         "@koa/router": "^12.0.0",
         "@sentry/integrations": "^7.15.0",
         "@sentry/node": "^7.15.0",
