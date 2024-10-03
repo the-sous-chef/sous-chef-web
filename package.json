@@ -8,7 +8,7 @@
         "@aws-sdk/client-appconfigdata": "^3.637.0",
         "@sentry/integrations": "^7.114.0",
         "@sentry/node": "^8.27.0",
-        "@sentry/react": "^8.27.0",
+        "@sentry/react": "^8.33.1",
         "@sentry/tracing": "^7.114.0",
         "@sentry/types": "^8.27.0",
         "@sentry/utils": "^8.27.0",
